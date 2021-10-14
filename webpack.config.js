@@ -54,4 +54,10 @@ module.exports = {
     asyncWebAssembly: true,
     syncWebAssembly: true,
   },
+  resolve: {
+    fallback: {
+      fs: false,
+      path: false,
+    },
+  },
 }

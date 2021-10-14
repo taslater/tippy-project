@@ -1,3 +1,10 @@
+// import Box2DFactory from "./Box2D.simd.js"
+import Box2DFactory from "box2d-wasm/dist/es/Box2D"
+Box2DFactory().then((box2D) => {
+  // finished downloading Box2D.wasm
+  console.log(box2D)
+})
+
 import("@dimforge/rapier2d").then((RAPIER) => {
   // Use the RAPIER module here.
   let gravity = { x: 0.0, y: -9.81 }
