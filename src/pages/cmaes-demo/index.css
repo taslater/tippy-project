@@ -1,0 +1,33 @@
+body {
+  font-family: Arial, Helvetica, sans-serif;
+}
+
+#canvas-div {
+  position: relative;
+  border: 2px solid black;
+}
+
+canvas {
+  position: absolute;
+}
+#canvas-bg {
+  z-index: 1;
+}
+#canvas-fg {
+  z-index: 2;
+}
+.zoom {
+  z-index: 3;
+  position: absolute;
+  width: 30px;
+  height: 30px;
+  left: 10px;
+  font-size: 20px;
+  padding: 0px;
+}
+#zoom-in {
+  top: 10px;
+}
+#zoom-out {
+  top: 40px;
+}

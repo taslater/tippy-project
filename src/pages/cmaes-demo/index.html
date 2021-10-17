@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title><%= htmlWebpackPlugin.options.title %></title>
+  </head>
+  <body>
+    <%= require('../partials/nav.html?raw') %>
+    <header>
+      <h1>CMA-ES</h1>
+    </header>
+    <div id="top-div"></div>
+
+    <div>
+      <label for="obj-fn-select">Choose a function:</label>
+      <select name="obj-fn-select" id="obj-fn-select"></select>
+    </div>
+
+    <div>
+      <label for="pop-mult-select">Population size:</label>
+      <select name="pop-mult-select" id="pop-mult-select">
+        <option value="0.5">Half</option>
+        <option value="1" selected>Default</option>
+        <option value="2">Double</option>
+        <option value="4">Quadruple</option>
+      </select>
+    </div>
+    <div>
+      <button id="step-btn">Step</button>
+    </div>
+    <div id="canvas-div">
+      <canvas id="canvas-bg"></canvas>
+      <canvas id="canvas-fg"></canvas>
+      <button id="zoom-in" class="zoom">&#43;</button>
+      <button id="zoom-out" class="zoom">&#8722;</button>
+    </div>
+    <%= require('../partials/footer.html?raw') %>
+  </body>
+</html>
