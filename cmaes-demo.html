@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>cmaes-demo</title>
+  <script defer src="cmaes-demo.8bf7fcbd08e74468c6e9.js"></script><link href="cmaes-demo.css" rel="stylesheet"></head>
+  <body>
+    <nav>
+  <ul>
+    <li><a href="index.html">Home</a></li>
+    <li><a href="cmaes-demo.html">Blackbox Optimizer</a></li>
+    <li><a href="phys-test.html">Compare Physics Libraries</a></li>
+    <li><a href="terrain.html">Generate Terrain</a></li>
+    <li><a href="tippy.html">Tippy</a></li>
+  </ul>
+</nav>
+
+    <header>
+      <h1>CMA-ES</h1>
+    </header>
+    <div id="top-div"></div>
+
+    <div>
+      <label for="obj-fn-select">Choose a function:</label>
+      <select name="obj-fn-select" id="obj-fn-select"></select>
+    </div>
+
+    <div>
+      <label for="pop-mult-select">Population size:</label>
+      <select name="pop-mult-select" id="pop-mult-select">
+        <option value="0.5">Half</option>
+        <option value="1" selected>Default</option>
+        <option value="2">Double</option>
+        <option value="4">Quadruple</option>
+      </select>
+    </div>
+    <div>
+      <button id="step-btn">Step</button>
+    </div>
+    <div id="canvas-div">
+      <canvas id="canvas-bg"></canvas>
+      <canvas id="canvas-fg"></canvas>
+      <button id="zoom-in" class="zoom">&#43;</button>
+      <button id="zoom-out" class="zoom">&#8722;</button>
+    </div>
+    <span class="spacer"></span>
+<span class="spacer"></span>
+<footer>
+  <ul>
+    <li>
+      <a
+        href="https://www.ivarprudnikov.com/static-website-multiple-html-pages-using-webpack-plus-github-example/"
+        >Blog post</a
+      >
+    </li>
+    <li>
+      <a href="https://github.com/ivarprudnikov/webpack-static-html-pages"
+        >Github repository</a
+      >
+    </li>
+  </ul>
+</footer>
+
+  </body>
+</html>
