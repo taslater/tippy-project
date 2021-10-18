@@ -4,14 +4,58 @@
     <meta charset="UTF-8" />
     <meta http-equiv="X-UA-Compatible" content="IE=edge" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title><%= htmlWebpackPlugin.options.title %></title>
+    <title>Training Tippy</title>
+    <!-- Global site tag (gtag.js) - Google Analytics -->
+    <script
+      async
+      src="https://www.googletagmanager.com/gtag/js?id=UA-156189593-1"
+    ></script>
+    <script>
+      window.dataLayer = window.dataLayer || []
+      function gtag() {
+        dataLayer.push(arguments)
+      }
+      gtag("js", new Date())
+
+      gtag("config", "UA-156189593-1")
+    </script>
   </head>
   <body>
     <%= require('../partials/nav.html?raw') %>
-    <header>
-      <h1><%= htmlWebpackPlugin.options.title %></h1>
-    </header>
-    <canvas id="canvas"></canvas>
+    <div>
+      <canvas id="tippy-canvas"></canvas>
+    </div>
+    <div>
+      <canvas id="chart-canvas"></canvas>
+    </div>
+    <div>
+      <button
+        id="train-btn"
+        style="height: 50px; width: 200px; font-size: 20px"
+      >
+        Begin training
+      </button>
+    </div>
+    <p>
+      Listicles told me to make projects I enjoy. I enjoy watching computers
+      solve problems in surprising ways. The behavior of intelligent agents is
+      fun to watch (interpretable? relatable?). The algorithms appear creative.
+    </p>
+    <p>
+      There are lots of fun examples. Presentations or videos are less
+      interactive. Live training is more interactive. A live training with an
+      agent that responds to user input is even more interactive.
+    </p>
+    <p>
+      So many algorithms to choose from! Continuous reinforcement learning is
+      efficient in some ways... Evolutionary strategies are neat.
+    </p>
     <%= require('../partials/footer.html?raw') %>
   </body>
+  <script
+    src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/3.5.1/chart.min.js"
+    integrity="sha512-Wt1bJGtlnMtGP0dqNFH1xlkLBNpEodaiQ8ZN5JLA5wpc1sUlk/O5uuOMNgvzddzkpvZ9GLyYNa8w2s7rqiTk5Q=="
+    crossorigin="anonymous"
+    referrerpolicy="no-referrer"
+  ></script>
 </html>
