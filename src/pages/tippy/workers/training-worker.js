@@ -1,11 +1,16 @@
 // let Module = { TOTAL_MEMORY: 256 * 1024 * 1024 }
-importScripts(
-  "../random_normal.js",
-  "../cma_lib.js",
-  "../globals.js",
-  "../tippy.js",
-  "../cmaMeanInit.js"
-)
+// importScripts(
+//   "../random_normal.js",
+//   "../cma_lib.js",
+//   "../globals.js",
+//   "../tippy.js",
+//   "../cmaMeanInit.js"
+// )
+
+import { globals } from "./../globals.js"
+import { cmaMeanInit } from "./../cmaMeanInit.js"
+import { updateDirection } from "./../tippy.js"
+import { CMA, getDefaultCMAPopsize } from "./../../../js/cma-lib.js"
 
 let cma,
   initialized = false
@@ -25,9 +30,9 @@ onmessage = (e) => {
 }
 
 function init(initInfo) {
-  ;({ cmaPopSize, totalPopSize, simulationPopSize } = getPopsizes(
+  const { cmaPopSize, totalPopSize, simulationPopSize } = getPopsizes(
     initInfo.n_dim
-  ))
+  )
 
   // const cmaMean = new Float32Array(initInfo.n_dim).fill(0)
   const cmaMean = cmaMeanInit.slice()
@@ -168,9 +173,9 @@ function getCreaturesPerWorker(n_dim) {
   ) // (eq. 48)
 }
 
-function getDefaultCMAPopsize(n_dim) {
-  return 4 + Math.floor(3 * Math.log(n_dim)) // (eq. 48)
-}
+// function getDefaultCMAPopsize(n_dim) {
+//   return 4 + Math.floor(3 * Math.log(n_dim)) // (eq. 48)
+// }
 
 function getPopsizes(n_dim) {
   const defaultPopSize = getDefaultCMAPopsize(n_dim),

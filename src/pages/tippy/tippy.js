@@ -593,7 +593,7 @@ export class Population {
     // assign solution and target to each tippy
     const nSolutions = solutions.length / this.n_dim
     if (this.tippys.length < nSolutions * targets.length) {
-      population.addTippys(nSolutions * targets.length - this.tippys.length)
+      this.addTippys(nSolutions * targets.length - this.tippys.length)
     }
     let flatWtsIdx = 0
     for (let i = 0; i < nSolutions; i++) {

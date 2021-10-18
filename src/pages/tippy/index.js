@@ -167,7 +167,10 @@ function initTrainBtn() {
       : "Resume training"
     if (trainBtn.training && !trainingWorkerInitialized) {
       console.log("Training begins!")
-      trainingWorker = new Worker("./workers/training-worker.js")
+      // trainingWorker = new Worker("./workers/training-worker.js")
+      trainingWorker = new Worker(
+        new URL("./workers/training-worker.js", import.meta.url)
+      )
 
       trainingWorker.postMessage(["init_info", { n_dim, terrainPts }])
 
@@ -187,7 +190,7 @@ function initTrainBtn() {
     } else if (trainBtn.training && trainingPaused) {
       console.log("training resumed")
       trainingPaused = false
-      if (solutionsScoresReceived == nWorkers) {
+      if (solutionsScoresReceived == globals.nWorkers) {
         sendScores()
       }
     } else if (!trainBtn.training && trainingWorkerInitialized) {

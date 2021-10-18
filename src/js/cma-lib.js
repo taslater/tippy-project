@@ -980,3 +980,7 @@ function eig_sym(_a) {
 //     vals[j] = vals[j][0]
 //   }
 // }
+
+export function getDefaultCMAPopsize(n_dim) {
+  return 4 + Math.floor(3 * Math.log(n_dim)) // (eq. 48)
+}
