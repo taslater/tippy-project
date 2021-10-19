@@ -145,7 +145,7 @@ function transition() {
       } else {
         transitionStep = 0
       }
-    }, 100)
+    }, 200)
   }
 
   myLoop() //  start the loop

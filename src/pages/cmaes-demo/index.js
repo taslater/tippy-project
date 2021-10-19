@@ -24,6 +24,8 @@ const imageDataBg = ctxFnGradient.createImageData(canvasDim, canvasDim)
 const imageDataBgData = imageDataBg.data
 imageDataBgData.fill(255)
 
+const markerCanvas = getMarkerCanvas()
+
 const fnSelect = document.getElementById("obj-fn-select")
 
 for (let k of Object.keys(objFns)) {
@@ -144,32 +146,31 @@ function drawMeans(means, ctx) {
   })
 }
 
-function drawMarkers(solutions, ctx) {
-  requestAnimationFrame(() => {
-    ctx.clearRect(0, 0, ctx.canvas.width, ctx.canvas.height)
-    ctx.save()
-    ctx.translate(0.5 * ctx.canvas.width, 0.5 * ctx.canvas.height)
-    for (let i = 0; i < solutions.length; i += 2) {
-      drawMarker(solutions[i], solutions[i + 1], ctx)
-    }
-    ctx.restore()
-  })
-}
+// function drawMarkers(solutions, ctx) {
+//   requestAnimationFrame(() => {
+//     ctx.clearRect(0, 0, ctx.canvas.width, ctx.canvas.height)
+//     ctx.save()
+//     ctx.translate(0.5 * ctx.canvas.width, 0.5 * ctx.canvas.height)
+//     for (let i = 0; i < solutions.length; i += 2) {
+//       drawMarker(solutions[i], solutions[i + 1], ctx)
+//     }
+//     ctx.restore()
+//   })
+// }
 
 function draw() {
   requestAnimationFrame(() => {
     ctxFnGradient.putImageData(imageDataBg, 0, 0)
-    ctxCmaSols.clearRect(0, 0, canvasDim, canvasDim)
+    ctxCmaSols.clearRect(0, 0, canvasCmaSols.width, canvasCmaSols.height)
     ctxCmaSols.save()
-    ctxCmaSols.translate(0.5 * canvasDim, 0.5 * canvasDim)
+    ctxCmaSols.translate(0.5 * canvasCmaSols.width, 0.5 * canvasCmaSols.height)
     for (let i = 0; i < solutions.length; i += 2) {
       drawMarker(solutions[i], solutions[i + 1], ctxCmaSols)
     }
     ctxCmaSols.restore()
+    ctxCmaSols.restore()
   })
 }
-
-const markerCanvas = getMarkerCanvas()
 
 function drawMarker(x, y, ctx) {
   drawCanvas(markerCanvas, ctx, [x, y], 0)
