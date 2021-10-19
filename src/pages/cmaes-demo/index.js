@@ -4,7 +4,8 @@ import { objFns } from "./obj-fns.js"
 import { canvasDim, markerR, nVizWorkers, objFnInit } from "./globals.js"
 import { drawCanvas } from "./../../js/draw-canvas.js"
 
-let zoom = 1
+let zoom = 1,
+  solutions
 
 const canvasFnGradient = document.getElementById("canvas-bg")
 const canvasCmaSols = document.getElementById("canvas-fg")
@@ -75,14 +76,33 @@ function updateZoom() {
 
 const stepBtn = document.getElementById("step-btn")
 stepBtn.addEventListener("click", () => {
-  console.log("step")
   cmaWorker.postMessage(["step", true])
+})
+
+const meansPathCheck = document.getElementById("means-path-checkbox")
+meansPathCheck.addEventListener("change", () => {
+  displayMeansPath = meansPathCheck.checked
+  if (displayMeansPath) {
+    drawMeans(meansPathArr, ctxCmaMeans)
+  } else {
+    requestAnimationFrame(() => {
+      ctxCmaMeans.clearRect(
+        0,
+        0,
+        ctxCmaMeans.canvas.width,
+        ctxCmaMeans.canvas.height
+      )
+    })
+  }
 })
 
 let scoreLimsReceived,
   minScore,
   maxScore,
-  imagesReceived = 0
+  imagesReceived = 0,
+  meansPathArr = new Float32Array(0),
+  displayMeansPath = false,
+  displayReady = false
 resetScoreLims()
 
 const cmaWorker = new Worker(new URL("./cma-worker.js", import.meta.url))
@@ -90,9 +110,17 @@ const cmaWorker = new Worker(new URL("./cma-worker.js", import.meta.url))
 cmaWorker.onmessage = (e) => {
   const [info, msg] = e.data
   if (info === "solutions") {
-    drawSolutions(msg, ctxCmaSols)
+    solutions = msg.slice()
+    // drawMarkers(msg, ctxCmaSols)
+    checkDrawReady()
   } else if (info === "means") {
-    drawMeans(msg, ctxCmaMeans)
+    meansPathArr = msg.slice()
+    if (displayMeansPath) {
+      drawMeans(meansPathArr, ctxCmaMeans)
+    }
+  } else if (info === "zoom") {
+    zoom = msg
+    updateZoom()
   }
 }
 
@@ -116,7 +144,7 @@ function drawMeans(means, ctx) {
   })
 }
 
-function drawSolutions(solutions, ctx) {
+function drawMarkers(solutions, ctx) {
   requestAnimationFrame(() => {
     ctx.clearRect(0, 0, ctx.canvas.width, ctx.canvas.height)
     ctx.save()
@@ -125,6 +153,19 @@ function drawSolutions(solutions, ctx) {
       drawMarker(solutions[i], solutions[i + 1], ctx)
     }
     ctx.restore()
+  })
+}
+
+function draw() {
+  requestAnimationFrame(() => {
+    ctxFnGradient.putImageData(imageDataBg, 0, 0)
+    ctxCmaSols.clearRect(0, 0, canvasDim, canvasDim)
+    ctxCmaSols.save()
+    ctxCmaSols.translate(0.5 * canvasDim, 0.5 * canvasDim)
+    for (let i = 0; i < solutions.length; i += 2) {
+      drawMarker(solutions[i], solutions[i + 1], ctxCmaSols)
+    }
+    ctxCmaSols.restore()
   })
 }
 
@@ -153,14 +194,11 @@ function getMarkerCanvas() {
   markerCanvas.height = d
 
   markerCTX.translate(0.5 * markerCanvas.width, 0.5 * markerCanvas.height)
-  const h0 = [-markerR, 0],
-    h1 = [+markerR, 0],
-    v0 = [0, -markerR],
-    v1 = [0, +markerR]
-  drawLineSeg(h0, h1, "black", 5, markerCTX)
-  drawLineSeg(v0, v1, "black", 5, markerCTX)
-  drawLineSeg(h0, h1, "white", 3, markerCTX)
-  drawLineSeg(v0, v1, "white", 3, markerCTX)
+
+  drawLineSeg([-markerR - 1, 0], [markerR + 1, 0], "black", 4, markerCTX)
+  drawLineSeg([0, -markerR - 1], [0, markerR + 1], "black", 4, markerCTX)
+  drawLineSeg([-markerR, 0], [markerR, 0], "white", 2, markerCTX)
+  drawLineSeg([0, -markerR], [0, markerR], "white", 2, markerCTX)
 
   return markerCanvas
 }
@@ -175,6 +213,7 @@ for (let workerIdx = 0; workerIdx < nVizWorkers; workerIdx++) {
       updateScoreLims(...msg, vizWorkers)
     } else if (info === "imageDataArray") {
       updateImageData(workerIdx, msg)
+      checkDrawReady()
     }
   }
   vizWorkers.push(vizWorker)
@@ -211,10 +250,17 @@ function updateImageData(workerIdx, msg) {
     arrayIdx += 4
   }
   imagesReceived++
+  // if (imagesReceived === nVizWorkers) {
+  //   requestAnimationFrame(() => {
+  //     ctxFnGradient.putImageData(imageDataBg, 0, 0)
+  //   })
+  //   imagesReceived = 0
+  // }
+}
+
+function checkDrawReady() {
   if (imagesReceived === nVizWorkers) {
-    requestAnimationFrame(() => {
-      ctxFnGradient.putImageData(imageDataBg, 0, 0)
-    })
+    draw()
     imagesReceived = 0
   }
 }

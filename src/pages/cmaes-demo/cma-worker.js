@@ -6,11 +6,15 @@ import {
   meanRadiusMin,
   meanRadiusMax,
   sigmaScale,
+  nTransitionSteps,
 } from "./globals.js"
 
-// console.log(new CMA([0, 0], 1, 10, undefined, undefined))
+const nTransitionStepsInv = 1.0 / nTransitionSteps
 
 let zoom = 1,
+  zoomNext = zoom,
+  zoomPrev = zoom,
+  transitionStep = 0,
   canvasScale,
   objFnName = objFnInit,
   objFnLim,
@@ -58,31 +62,43 @@ function cmaInit() {
     randRadius * Math.sin(randRadians),
   ])
   const popsize = getDefaultCMAPopsize(2) * popsizeMultiplier
-  console.log(popsize)
   cma = new CMA(cmaMean, cmaSigma, popsize, undefined, undefined)
-  meanHistory.push(...cma.mean)
   cmaStep()
 }
 
 function cmaStep() {
   const solutions = new Float32Array(2 * cma.popsize),
     sol_score_array = []
-  let scoreSum = 0
+  let scoreSum = 0,
+    maxAbsDim = 0
   for (let i = 0; i < cma.popsize; i++) {
     const solution = cma.ask(),
       score = objFn(solution)
     scoreSum += score
     sol_score_array.push({ solution, score })
     for (let j = 0; j < 2; j++) {
-      solutions[2 * i + j] = solution[j]
+      const solDim = solution[j],
+        absSolDim = Math.abs(solDim)
+      if (absSolDim > maxAbsDim) {
+        maxAbsDim = absSolDim
+      }
+      solutions[2 * i + j] = solDim
     }
   }
-  console.log(scoreSum / cma.popsize)
-  cma.tell(sol_score_array)
   solutionsHistory.push(solutions)
-  meanHistory.push(...cma.mean)
+  meanHistory.push(...cma.mean.slice())
+  cma.tell(sol_score_array)
+
+  console.log(scoreSum / cma.popsize)
+  zoomPrev = zoomNext
+  zoomNext = (0.8 * objFnLim) / maxAbsDim
+  zoom = (0.8 * objFnLim) / maxAbsDim
   sendMeanHistory()
-  sendCurrentSolutions()
+
+  // postMessage(["zoom", zoom])
+  // updateCanvasScale()
+  // sendCurrentSolutions()
+  transition()
 }
 
 function sendMeanHistory() {
@@ -94,7 +110,10 @@ function sendMeanHistory() {
 
 function sendCurrentSolutions() {
   const currentSolution = solutionsHistory[solutionsHistory.length - 1]
-  postMessage(["solutions", currentSolution.map((v) => v * canvasScale)])
+  postMessage([
+    "solutions",
+    currentSolution.map((v) => Math.round(v * canvasScale)),
+  ])
 }
 
 function updateObjFn(objFnName) {
@@ -104,5 +123,30 @@ function updateObjFn(objFnName) {
 }
 
 function updateCanvasScale() {
-  canvasScale = (zoom * canvasDim) / objFnLim
+  canvasScale = (zoom * 0.5 * canvasDim) / objFnLim
+}
+
+function transition() {
+  // https://stackoverflow.com/questions/3583724/how-do-i-add-a-delay-in-a-javascript-loop
+  function myLoop() {
+    //  create a loop function
+    setTimeout(() => {
+      //  call a 3s setTimeout when the loop is called
+      zoom =
+        zoomNext * (transitionStep * nTransitionStepsInv) +
+        zoomPrev * ((nTransitionSteps - transitionStep) * nTransitionStepsInv)
+      postMessage(["zoom", zoom])
+      updateCanvasScale()
+      sendCurrentSolutions()
+      transitionStep++ //  increment the counter
+      if (transitionStep <= nTransitionSteps) {
+        //  if the counter < 10, call the loop function
+        myLoop() //  ..  again which will trigger another
+      } else {
+        transitionStep = 0
+      }
+    }, 100)
+  }
+
+  myLoop() //  start the loop
 }

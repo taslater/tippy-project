@@ -27,7 +27,9 @@ onmessage = (e) => {
   const [info, msg] = e.data
   if (info === "workerID") {
     myID = msg
-    init()
+    // init()
+    updateObjFn(objFnInit)
+    updateScores()
   } else if (info === "zoom") {
     zoom = msg
     updateEvalLims()
@@ -95,7 +97,7 @@ function postImageData() {
   postMessage(["imageDataArray", imageDataArray])
 }
 
-function init() {
-  updateObjFn(objFnInit)
-  updateScores()
-}
+// function init() {
+//   updateObjFn(objFnInit)
+//   updateScores()
+// }

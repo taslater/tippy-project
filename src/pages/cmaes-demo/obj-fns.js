@@ -10,7 +10,7 @@ export const objFns = {
   // https://www.sfu.ca/~ssurjano/Code/ackleym.html
   ackley: (inputs) => {
     // default a=20, b=0.2, c=2pi
-    const a = 2000000,
+    const a = 20,
       b = 0.2,
       c = 2 * Math.PI
     // let d = inputs.length
