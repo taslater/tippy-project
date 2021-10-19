@@ -15,12 +15,16 @@ canvas {
   z-index: 1;
 }
 
-#canvas-fg {
+#canvas-means {
   z-index: 2;
 }
 
-.zoom {
+#canvas-fg {
   z-index: 3;
+}
+
+.zoom {
+  z-index: 4;
   position: absolute;
   width: 30px;
   height: 30px;

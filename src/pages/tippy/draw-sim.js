@@ -1,5 +1,6 @@
 import { globals } from "./globals.js"
 import { xPosToTerrainIdx, terrainIdxToXPos } from "./tippy.js"
+import { drawCanvas } from "./../../js/draw-canvas.js"
 
 export function drawTippy(
   tippy,
@@ -134,15 +135,6 @@ export function drawTippy(
     wheelAngleCurrent
   )
 
-  // const lidarBaseY = wheelPosOffset[1] + tippy.wheelR + tippy.yClearance
-
-  // drawCanvas(
-  //   lidarCanvas,
-  //   ctx,
-  //   [scale * wheelPosOffset[0], scale * lidarBaseY],
-  //   0
-  // )
-
   const reverse = tippy.reverse
   for (let j = 0; j < globals.xOffs.length; j++) {
     const lidarY = tippy.lidarYs[j],
@@ -190,22 +182,14 @@ export function drawInputBar(target, ctx) {
   ctx.stroke()
 }
 
-function drawCanvas(canvasFrom, ctxTo, center, angle) {
-  ctxTo.save()
-  ctxTo.translate(center[0], center[1])
-  // ctxTo.translate(
-  //   0.5 * canvasFrom.width + 0.5 * center[0],
-  //   0.5 * canvasFrom.height + 0.5 * center[1]
-  // )
-  // ctxTo.translate(0.5 * canvasFrom.width, 0.5 * canvasFrom.height)
-  ctxTo.rotate(angle)
-  // ctxTo.translate(-0.5 * canvasFrom.width, -0.5 * canvasFrom.height)
-  ctxTo.translate(-0.5 * canvasFrom.width, -0.5 * canvasFrom.height)
-  // const borders = canvasFrom.imgBorders
-  // ctxTo.drawImage(canvasFrom, -borders[0], -borders[1])
-  ctxTo.drawImage(canvasFrom, 0, 0)
-  ctxTo.restore()
-}
+// function drawCanvas(canvasFrom, ctxTo, center, angle) {
+//   ctxTo.save()
+//   ctxTo.translate(center[0], center[1])
+//   ctxTo.rotate(angle)
+//   ctxTo.translate(-0.5 * canvasFrom.width, -0.5 * canvasFrom.height)
+//   ctxTo.drawImage(canvasFrom, 0, 0)
+//   ctxTo.restore()
+// }
 
 export function getWheelCanvas(d) {
   const wheelCanvas = document.createElement("canvas"),

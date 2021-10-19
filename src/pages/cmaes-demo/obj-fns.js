@@ -30,6 +30,7 @@ export const objFns = {
   },
   // http://benchmarkfcns.xyz/benchmarkfcns/bohachevskyn1fcn.html
   // https://www.sfu.ca/~ssurjano/Code/boha1m.html
+  // https://www.sfu.ca/~ssurjano/boha.html
   bohachevsky1: (inputs) => {
     let x1 = inputs[0]
     let x2 = inputs[1]
@@ -41,6 +42,7 @@ export const objFns = {
 
     return term1 + term2 + term3 + term4 + 0.7
   },
+  // https://www.sfu.ca/~ssurjano/griewank.html
   griewank: (inputs) => {
     let d = inputs.length
     let sum = 0
@@ -52,6 +54,7 @@ export const objFns = {
     }
     return sum - prod + 1
   },
+  // https://www.sfu.ca/~ssurjano/rastr.html
   rastrigin: (inputs) => {
     let d = inputs.length
     let sum = 0
@@ -72,5 +75,5 @@ objFns.rastrigin.fancyName = "Rastrigin"
 // fnLims for display limits
 objFns.ackley.xyLim = 32.768
 objFns.bohachevsky1.xyLim = 100
-objFns.rastrigin.xyLim = 5.12
 objFns.griewank.xyLim = 600
+objFns.rastrigin.xyLim = 5.12

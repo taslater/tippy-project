@@ -1,43 +1,51 @@
 import { CMA, getDefaultCMAPopsize } from "../../js/cma-lib.js"
 import { objFns } from "./obj-fns.js"
-import { objFnInit, canvasDim } from "./globals.js"
+import {
+  objFnInit,
+  canvasDim,
+  meanRadiusMin,
+  meanRadiusMax,
+  sigmaScale,
+} from "./globals.js"
 
 // console.log(new CMA([0, 0], 1, 10, undefined, undefined))
 
-const meanRadiusMin = 0.7,
-  meanRadiusMax = 1,
-  sigmaScale = 0.5
-
 let zoom = 1,
   canvasScale,
+  objFnName = objFnInit,
   objFnLim,
   objFn,
   cma,
   solutionsHistory,
+  meanHistory,
   popsizeMultiplier = 1
 
-updateObjFn(objFnInit)
-updateCanvasScale()
+// updateObjFn(objFnInit)
 cmaInit()
 
 onmessage = (e) => {
   const [info, msg] = e.data
   if (info === "fnName") {
-    updateObjFn(msg)
+    // updateObjFn(msg)
+    objFnName = msg
+    cmaInit()
+  } else if (info === "popMult") {
+    popsizeMultiplier = msg
     cmaInit()
   } else if (info === "step") {
     cmaStep()
   } else if (info === "zoom") {
     zoom = msg
     updateCanvasScale()
+    sendMeanHistory()
     sendCurrentSolutions()
   }
 }
 
 function cmaInit() {
+  updateObjFn(objFnName)
   solutionsHistory = []
-  // let popsize = undefined
-  // let popsize = 20
+  meanHistory = []
   const cmaSigma = sigmaScale * objFnLim
   // cmaMean = []
   const randRadians = 2 * Math.PI * Math.random()
@@ -52,6 +60,7 @@ function cmaInit() {
   const popsize = getDefaultCMAPopsize(2) * popsizeMultiplier
   console.log(popsize)
   cma = new CMA(cmaMean, cmaSigma, popsize, undefined, undefined)
+  meanHistory.push(...cma.mean)
   cmaStep()
 }
 
@@ -71,7 +80,16 @@ function cmaStep() {
   console.log(scoreSum / cma.popsize)
   cma.tell(sol_score_array)
   solutionsHistory.push(solutions)
+  meanHistory.push(...cma.mean)
+  sendMeanHistory()
   sendCurrentSolutions()
+}
+
+function sendMeanHistory() {
+  const meanHistoryTyped = Float32Array.from(
+    meanHistory.map((v) => v * canvasScale)
+  )
+  postMessage(["means", meanHistoryTyped])
 }
 
 function sendCurrentSolutions() {
