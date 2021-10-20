@@ -96,8 +96,3 @@ function postImageData() {
   }
   postMessage(["imageDataArray", imageDataArray])
 }
-
-// function init() {
-//   updateObjFn(objFnInit)
-//   updateScores()
-// }

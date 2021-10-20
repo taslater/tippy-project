@@ -113,7 +113,6 @@ cmaWorker.onmessage = (e) => {
   const [info, msg] = e.data
   if (info === "solutions") {
     solutions = msg.slice()
-    // drawMarkers(msg, ctxCmaSols)
     checkDrawReady()
   } else if (info === "means") {
     meansPathArr = msg.slice()
@@ -145,18 +144,6 @@ function drawMeans(means, ctx) {
     ctx.restore()
   })
 }
-
-// function drawMarkers(solutions, ctx) {
-//   requestAnimationFrame(() => {
-//     ctx.clearRect(0, 0, ctx.canvas.width, ctx.canvas.height)
-//     ctx.save()
-//     ctx.translate(0.5 * ctx.canvas.width, 0.5 * ctx.canvas.height)
-//     for (let i = 0; i < solutions.length; i += 2) {
-//       drawMarker(solutions[i], solutions[i + 1], ctx)
-//     }
-//     ctx.restore()
-//   })
-// }
 
 function draw() {
   requestAnimationFrame(() => {

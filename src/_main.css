@@ -10,44 +10,21 @@ body {
   font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
   margin: 0;
   padding: 0;
-  display: grid;
-  grid-template-columns: 1fr;
-  grid-template-rows: auto auto 1fr auto;
-  grid-template-areas:
-    "nav"
-    "header"
-    "main"
-    "footer";
-}
-
-nav {
-  grid-area: nav;
-  display: block;
-  background-color: black;
-  color: white;
-  padding: 7px;
-}
-
-header {
-  grid-area: header;
-  display: block;
-  text-align: center;
-}
-
-main {
-  grid-area: main;
-  padding: 10px 20px 10px 20px;
-  overflow: auto;
-}
-
-footer {
-  grid-area: footer;
+  display: flex;
+  flex-direction: column;
 }
 
 h1,
 h2,
 h3 {
   font-weight: 300;
+}
+
+nav {
+  display: block;
+  background-color: black;
+  color: white;
+  padding: 7px;
 }
 
 nav > ul {
@@ -64,7 +41,7 @@ nav > ul > li {
 
 nav > ul > li > a {
   display: block;
-  color: white;
+  color: beige;
   font-size: 18px;
   padding: 10px 20px;
   font-weight: bold;
@@ -91,13 +68,13 @@ nav > ul > li > a {
 
 footer {
   background: #282828;
-  color: white;
+  color: beige;
   flex: 1 0 auto;
   padding-top: 20px;
 }
 
 footer a {
-  color: white;
+  color: beige;
 }
 
 footer > ul {
@@ -115,5 +92,9 @@ footer > ul > li {
 footer > ul > li > a {
   display: block;
   font-size: 21px;
-  padding: 10px 20px 40px 20px;
+  padding: 10px 20px;
+}
+
+.spacer {
+  flex: 2 1 auto;
 }

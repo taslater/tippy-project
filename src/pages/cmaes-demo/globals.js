@@ -1,5 +1,5 @@
 export const nVizWorkers = 8,
-  canvasDim = 800,
+  canvasDim = 600,
   markerR = 7,
   objFnInit = "ackley",
   meanRadiusMin = 0.3,
