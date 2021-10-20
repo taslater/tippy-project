@@ -11,7 +11,7 @@
   "keywords": [],
   "author": "",
   "license": "ISC",
-  "homepage": "https://taslater.github.io/webpack-gh-pages-test",
+  "homepage": "https://taslater.github.io/tippy-project/",
   "devDependencies": {
     "@babel/core": "^7.15.8",
     "@babel/preset-env": "^7.15.8",
