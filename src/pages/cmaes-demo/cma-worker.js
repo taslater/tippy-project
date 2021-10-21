@@ -92,7 +92,7 @@ function cmaStep() {
   console.log(scoreSum / cma.popsize)
   zoomPrev = zoomNext
   zoomNext = (0.8 * objFnLim) / maxAbsDim
-  zoom = (0.8 * objFnLim) / maxAbsDim
+  // zoom = (0.8 * objFnLim) / maxAbsDim
   sendMeanHistory()
 
   // postMessage(["zoom", zoom])
