@@ -12,10 +12,9 @@ body {
   padding: 0;
   display: grid;
   grid-template-columns: 1fr;
-  grid-template-rows: auto auto 1fr auto;
+  grid-template-rows: auto 1fr auto;
   grid-template-areas:
     "nav"
-    "header"
     "main"
     "footer";
 }
@@ -26,12 +25,15 @@ nav {
   background-color: black;
   color: white;
   padding: 7px;
+  /* align-self: start; */
+  /* position: sticky; */
 }
 
 header {
-  grid-area: header;
+  grid-area: main;
   display: block;
   text-align: center;
+  /* overflow: auto; */
 }
 
 main {

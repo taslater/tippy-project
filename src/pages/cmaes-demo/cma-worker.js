@@ -6,15 +6,16 @@ import {
   meanRadiusMin,
   meanRadiusMax,
   sigmaScale,
-  nTransitionSteps,
+  // nTransitionSteps,
+  zoomStepMag,
 } from "./globals.js"
 
-const nTransitionStepsInv = 1.0 / nTransitionSteps
+// const nTransitionStepsInv = 1.0 / nTransitionSteps
 
 let zoom = 1,
   zoomNext = zoom,
-  zoomPrev = zoom,
-  transitionStep = 0,
+  // zoomPrev = zoom,
+  // transitionStep = 0,
   canvasScale,
   objFnName = objFnInit,
   objFnLim,
@@ -90,7 +91,7 @@ function cmaStep() {
   cma.tell(sol_score_array)
 
   console.log(scoreSum / cma.popsize)
-  zoomPrev = zoomNext
+  // zoomPrev = zoomNext
   zoomNext = (0.8 * objFnLim) / maxAbsDim
   // zoom = (0.8 * objFnLim) / maxAbsDim
   sendMeanHistory()
@@ -132,19 +133,32 @@ function transition() {
     //  create a loop function
     setTimeout(() => {
       //  call a 3s setTimeout when the loop is called
-      zoom =
-        zoomNext * (transitionStep * nTransitionStepsInv) +
-        zoomPrev * ((nTransitionSteps - transitionStep) * nTransitionStepsInv)
+      if (zoom < zoomNext) {
+        zoom *= zoomStepMag
+        if (zoom > zoomNext) {
+          zoom = zoomNext
+        }
+      } else {
+        zoom /= zoomStepMag
+        if (zoom < zoomNext) {
+          zoom = zoomNext
+        }
+      }
+      // zoom =
+      //   zoomNext * (transitionStep * nTransitionStepsInv) +
+      //   zoomPrev * ((nTransitionSteps - transitionStep) * nTransitionStepsInv)
       postMessage(["zoom", zoom])
       updateCanvasScale()
       sendCurrentSolutions()
-      transitionStep++ //  increment the counter
-      if (transitionStep <= nTransitionSteps) {
+      // transitionStep++ //  increment the counter
+      // if (transitionStep <= nTransitionSteps) {
+      if (zoom != zoomNext) {
         //  if the counter < 10, call the loop function
         myLoop() //  ..  again which will trigger another
-      } else {
-        transitionStep = 0
       }
+      // else {
+      //   transitionStep = 0
+      // }
     }, 200)
   }
 
