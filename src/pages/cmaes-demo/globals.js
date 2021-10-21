@@ -5,5 +5,4 @@ export const nVizWorkers = 8,
   meanRadiusMin = 0.3,
   meanRadiusMax = 0.5,
   sigmaScale = 0.5,
-  nTransitionSteps = 10,
   zoomStepMag = 1.05

@@ -6,16 +6,11 @@ import {
   meanRadiusMin,
   meanRadiusMax,
   sigmaScale,
-  // nTransitionSteps,
   zoomStepMag,
 } from "./globals.js"
 
-// const nTransitionStepsInv = 1.0 / nTransitionSteps
-
-let zoom = 1,
-  zoomNext = zoom,
-  // zoomPrev = zoom,
-  // transitionStep = 0,
+let zoom,
+  zoomNext,
   canvasScale,
   objFnName = objFnInit,
   objFnLim,
@@ -25,13 +20,11 @@ let zoom = 1,
   meanHistory,
   popsizeMultiplier = 1
 
-// updateObjFn(objFnInit)
 cmaInit()
 
 onmessage = (e) => {
   const [info, msg] = e.data
   if (info === "fnName") {
-    // updateObjFn(msg)
     objFnName = msg
     cmaInit()
   } else if (info === "popMult") {
@@ -44,15 +37,20 @@ onmessage = (e) => {
     updateCanvasScale()
     sendMeanHistory()
     sendCurrentSolutions()
+  } else if (info === "drawReady") {
+    if (zoom != zoomNext) {
+      transitionStep()
+    }
   }
 }
 
 function cmaInit() {
+  zoom = 1
+  zoomNext = zoom
   updateObjFn(objFnName)
   solutionsHistory = []
   meanHistory = []
   const cmaSigma = sigmaScale * objFnLim
-  // cmaMean = []
   const randRadians = 2 * Math.PI * Math.random()
   const randRadius =
     objFnLim * (meanRadiusMin + Math.random() * (meanRadiusMax - meanRadiusMin))
@@ -91,15 +89,12 @@ function cmaStep() {
   cma.tell(sol_score_array)
 
   console.log(scoreSum / cma.popsize)
-  // zoomPrev = zoomNext
+
   zoomNext = (0.8 * objFnLim) / maxAbsDim
-  // zoom = (0.8 * objFnLim) / maxAbsDim
+
   sendMeanHistory()
 
-  // postMessage(["zoom", zoom])
-  // updateCanvasScale()
-  // sendCurrentSolutions()
-  transition()
+  transitionStep()
 }
 
 function sendMeanHistory() {
@@ -127,40 +122,19 @@ function updateCanvasScale() {
   canvasScale = (zoom * 0.5 * canvasDim) / objFnLim
 }
 
-function transition() {
-  // https://stackoverflow.com/questions/3583724/how-do-i-add-a-delay-in-a-javascript-loop
-  function myLoop() {
-    //  create a loop function
-    setTimeout(() => {
-      //  call a 3s setTimeout when the loop is called
-      if (zoom < zoomNext) {
-        zoom *= zoomStepMag
-        if (zoom > zoomNext) {
-          zoom = zoomNext
-        }
-      } else {
-        zoom /= zoomStepMag
-        if (zoom < zoomNext) {
-          zoom = zoomNext
-        }
-      }
-      // zoom =
-      //   zoomNext * (transitionStep * nTransitionStepsInv) +
-      //   zoomPrev * ((nTransitionSteps - transitionStep) * nTransitionStepsInv)
-      postMessage(["zoom", zoom])
-      updateCanvasScale()
-      sendCurrentSolutions()
-      // transitionStep++ //  increment the counter
-      // if (transitionStep <= nTransitionSteps) {
-      if (zoom != zoomNext) {
-        //  if the counter < 10, call the loop function
-        myLoop() //  ..  again which will trigger another
-      }
-      // else {
-      //   transitionStep = 0
-      // }
-    }, 200)
+function transitionStep() {
+  if (zoom < zoomNext) {
+    zoom *= zoomStepMag
+    if (zoom > zoomNext) {
+      zoom = zoomNext
+    }
+  } else {
+    zoom /= zoomStepMag
+    if (zoom < zoomNext) {
+      zoom = zoomNext
+    }
   }
-
-  myLoop() //  start the loop
+  postMessage(["zoom", zoom])
+  updateCanvasScale()
+  sendCurrentSolutions()
 }

@@ -8,6 +8,13 @@ let zoom = 1,
   solutions,
   solutionsFresh = false
 
+let scoreLimsReceived,
+  minScore,
+  maxScore,
+  imagesReceived = 0,
+  meansPathArr = new Float32Array(0),
+  displayMeansPath = false
+
 const canvasFnGradient = document.getElementById("canvas-bg")
 const canvasCmaSols = document.getElementById("canvas-fg")
 const canvasCmaMeans = document.getElementById("canvas-means")
@@ -99,13 +106,6 @@ meansPathCheck.addEventListener("change", () => {
   }
 })
 
-let scoreLimsReceived,
-  minScore,
-  maxScore,
-  imagesReceived = 0,
-  meansPathArr = new Float32Array(0),
-  displayMeansPath = false,
-  displayReady = false
 resetScoreLims()
 
 const cmaWorker = new Worker(new URL("./cma-worker.js", import.meta.url))
@@ -159,6 +159,8 @@ function draw() {
     ctxCmaSols.restore()
     // ctxCmaSols.restore()
     solutionsFresh = false
+    imagesReceived = 0
+    cmaWorker.postMessage(["drawReady", true])
   })
 }
 
@@ -252,6 +254,5 @@ function updateImageData(workerIdx, msg) {
 function checkDrawReady() {
   if (imagesReceived === nVizWorkers && solutionsFresh) {
     draw()
-    imagesReceived = 0
   }
 }
