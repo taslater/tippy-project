@@ -5,7 +5,8 @@ import { canvasDim, markerR, nVizWorkers, objFnInit } from "./globals.js"
 import { drawCanvas } from "./../../js/draw-canvas.js"
 
 let zoom = 1,
-  solutions
+  solutions,
+  solutionsFresh = false
 
 const canvasFnGradient = document.getElementById("canvas-bg")
 const canvasCmaSols = document.getElementById("canvas-fg")
@@ -113,6 +114,7 @@ cmaWorker.onmessage = (e) => {
   const [info, msg] = e.data
   if (info === "solutions") {
     solutions = msg.slice()
+    solutionsFresh = true
     checkDrawReady()
   } else if (info === "means") {
     meansPathArr = msg.slice()
@@ -155,7 +157,8 @@ function draw() {
       drawMarker(solutions[i], solutions[i + 1], ctxCmaSols)
     }
     ctxCmaSols.restore()
-    ctxCmaSols.restore()
+    // ctxCmaSols.restore()
+    solutionsFresh = false
   })
 }
 
@@ -247,7 +250,7 @@ function updateImageData(workerIdx, msg) {
 }
 
 function checkDrawReady() {
-  if (imagesReceived === nVizWorkers) {
+  if (imagesReceived === nVizWorkers && solutionsFresh) {
     draw()
     imagesReceived = 0
   }
