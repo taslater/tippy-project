@@ -5,7 +5,7 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>cmaes-demo</title>
-  <script defer src="cmaes-demo.b8f6ee914ea36b9ed7ba.js"></script><link href="cmaes-demo.css" rel="stylesheet"></head>
+  <script defer src="cmaes-demo.50e411f2fc7bccb3fc16.js"></script><link href="cmaes-demo.css" rel="stylesheet"></head>
   <body>
     <nav>
   <ul>
@@ -22,13 +22,17 @@
         <h1>CMA-ES</h1>
       </header>
       <div class="demo-grid-container">
-        <div class="demo-grid"">
-          <div id="canvas-div">
-            <canvas id="canvas-bg"></canvas>
-            <canvas id="canvas-fg"></canvas>
-            <canvas id="canvas-means"></canvas>
+        <div class="demo-grid">
+          <div id="obj-fn-canvas-div">
+            <canvas id="canvas-bg" class="obj-fn-canvas"></canvas>
+            <canvas id="canvas-fg" class="obj-fn-canvas"></canvas>
+            <canvas id="canvas-means" class="obj-fn-canvas"></canvas>
             <button id="zoom-in" class="zoom">&#43;</button>
             <button id="zoom-out" class="zoom">&#8722;</button>
+          </div>
+
+          <div id="chart-canvas-div">
+            <canvas id="canvas-chart"></canvas>
           </div>
 
           <div id="controls-div">
@@ -55,7 +59,8 @@
                 id="means-path-checkbox"
                 name="means-path-checkbox"
               />
-              <label for="means-path-checkbox"> Show optimizer search path</label
+              <label for="means-path-checkbox">
+                Show optimizer search path</label
               ><br />
             </div>
           </div>
