@@ -19,7 +19,7 @@ let zoom = 1,
 const canvasFnGradient = document.getElementById("canvas-bg")
 const canvasCmaSols = document.getElementById("canvas-fg")
 const canvasCmaMeans = document.getElementById("canvas-means")
-const canvasDiv = document.getElementById("canvas-div")
+const canvasDiv = document.getElementById("obj-fn-canvas-div")
 canvasDiv.setAttribute("style", `width:${canvasDim}px; height:${canvasDim}px`)
 for (let canvas of [canvasCmaSols, canvasFnGradient, canvasCmaMeans]) {
   canvas.width = canvasDim
@@ -72,20 +72,28 @@ popMultSelect.addEventListener("change", (e) => {
 const zoomInBtn = document.getElementById("zoom-in")
 zoomInBtn.addEventListener("click", () => {
   zoom *= 1.1
-  updateZoom()
+  updateZoomAll()
 })
 
 const zoomOutBtn = document.getElementById("zoom-out")
 zoomOutBtn.addEventListener("click", () => {
   zoom /= 1.1
-  updateZoom()
+  updateZoomAll()
 })
 
-function updateZoom() {
+function updateZoomObjFn() {
   for (let worker of vizWorkers) {
     worker.postMessage(["zoom", zoom])
   }
+}
+
+function updateZoomCMA() {
   cmaWorker.postMessage(["zoom", zoom])
+}
+
+function updateZoomAll() {
+  updateZoomObjFn()
+  updateZoomCMA()
 }
 
 const stepBtn = document.getElementById("step-btn")
@@ -119,7 +127,6 @@ cmaWorker.onmessage = (e) => {
   if (info === "solutions") {
     solutions = msg[0].slice()
     ellipsePts = msg[1].slice()
-    console.log("sols")
     solutionsFresh = true
     checkDrawReady()
   } else if (info === "means") {
@@ -129,7 +136,7 @@ cmaWorker.onmessage = (e) => {
     }
   } else if (info === "zoom") {
     zoom = msg
-    updateZoom()
+    updateZoomObjFn()
   } else if (info === "ellipsePts") {
     ellipsePts = msg.slice()
     console.log(ellipsePts)

@@ -13,13 +13,17 @@
         <h1>CMA-ES</h1>
       </header>
       <div class="demo-grid-container">
-        <div class="demo-grid"">
-          <div id="canvas-div">
-            <canvas id="canvas-bg"></canvas>
-            <canvas id="canvas-fg"></canvas>
-            <canvas id="canvas-means"></canvas>
+        <div class="demo-grid">
+          <div id="obj-fn-canvas-div">
+            <canvas id="canvas-bg" class="obj-fn-canvas"></canvas>
+            <canvas id="canvas-fg" class="obj-fn-canvas"></canvas>
+            <canvas id="canvas-means" class="obj-fn-canvas"></canvas>
             <button id="zoom-in" class="zoom">&#43;</button>
             <button id="zoom-out" class="zoom">&#8722;</button>
+          </div>
+
+          <div id="chart-canvas-div">
+            <canvas id="canvas-chart"></canvas>
           </div>
 
           <div id="controls-div">
@@ -46,7 +50,8 @@
                 id="means-path-checkbox"
                 name="means-path-checkbox"
               />
-              <label for="means-path-checkbox"> Show optimizer search path</label
+              <label for="means-path-checkbox">
+                Show optimizer search path</label
               ><br />
             </div>
           </div>

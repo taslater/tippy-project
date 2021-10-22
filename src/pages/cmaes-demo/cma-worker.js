@@ -47,15 +47,17 @@ onmessage = (e) => {
       return
     }
     cmaStep()
-  } else if (info === "zoom") {
-    zoom = msg
-    updateCanvasScale()
-    sendMeanHistory()
-    sendCurrentSolutions()
   } else if (info === "drawReady") {
     if (zoom != zoomNext) {
       transitionStep()
     }
+  } else if (info === "zoom") {
+    zoom = msg
+    zoomNext = msg
+    // console.log("cma got zoom", zoom)
+    updateCanvasScale()
+    sendMeanHistory()
+    sendCurrentSolutions()
   }
 }
 
@@ -109,11 +111,11 @@ function cmaStep() {
   // console.log(...cmaMats)
   // sendEllipseParams()
   // sendEllipsePts()
-  sendMeanHistory()
+  // sendMeanHistory()
   transitionStep()
   cma.tell(sol_score_array)
 
-  console.log(scoreSum / cma.popsize)
+  console.log("mean score:", scoreSum / cma.popsize)
 
   zoomNext = (0.8 * objFnLim) / maxAbsDim
 }
@@ -160,6 +162,7 @@ function transitionStep() {
   }
   postMessage(["zoom", zoom])
   updateCanvasScale()
+  sendMeanHistory()
   sendCurrentSolutions()
 }
 
