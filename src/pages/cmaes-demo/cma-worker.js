@@ -7,10 +7,11 @@ import {
   meanRadiusMax,
   sigmaScale,
   zoomStepMag,
+  nEllipseTestPts,
 } from "./globals.js"
 
-let zoom,
-  zoomNext,
+let zoom = 1,
+  zoomNext = 1,
   canvasScale,
   objFnName = objFnInit,
   objFnLim,
@@ -18,7 +19,18 @@ let zoom,
   cma,
   solutionsHistory,
   meanHistory,
+  ellipsePts,
   popsizeMultiplier = 1
+
+// IIFE
+const ellipseTestPts = (() => {
+  const thetaStep = (2 * Math.PI) / nEllipseTestPts
+  const testPts = []
+  for (let theta = 0; theta < 2 * Math.PI; theta += thetaStep) {
+    testPts.push(Float32Array.from([Math.sin(theta), Math.cos(theta)]))
+  }
+  return testPts
+})()
 
 cmaInit()
 
@@ -31,6 +43,9 @@ onmessage = (e) => {
     popsizeMultiplier = msg
     cmaInit()
   } else if (info === "step") {
+    if (zoom != zoomNext) {
+      return
+    }
     cmaStep()
   } else if (info === "zoom") {
     zoom = msg
@@ -85,16 +100,22 @@ function cmaStep() {
     }
   }
   solutionsHistory.push(solutions)
+  ellipsePts = getEllipsePts()
   meanHistory.push(...cma.mean.slice())
+  // const cmaMats = [""]
+  // for (let prop of ["B", "BD", "C"]) {
+  //   cmaMats.push(cma[prop].data.toString(), "\n")
+  // }
+  // console.log(...cmaMats)
+  // sendEllipseParams()
+  // sendEllipsePts()
+  sendMeanHistory()
+  transitionStep()
   cma.tell(sol_score_array)
 
   console.log(scoreSum / cma.popsize)
 
   zoomNext = (0.8 * objFnLim) / maxAbsDim
-
-  sendMeanHistory()
-
-  transitionStep()
 }
 
 function sendMeanHistory() {
@@ -108,7 +129,10 @@ function sendCurrentSolutions() {
   const currentSolution = solutionsHistory[solutionsHistory.length - 1]
   postMessage([
     "solutions",
-    currentSolution.map((v) => Math.round(v * canvasScale)),
+    [
+      currentSolution.map((v) => Math.round(v * canvasScale)),
+      ellipsePts.map((v) => Math.round(v * canvasScale)),
+    ],
   ])
 }
 
@@ -138,3 +162,53 @@ function transitionStep() {
   updateCanvasScale()
   sendCurrentSolutions()
 }
+
+// function sendEllipseParams() {
+//   const [a, b, _, c] = cma.C.data.slice()
+//   const t0 = (a + c) / 2,
+//     t1 = (a - c) / 2,
+//     t2 = Math.sqrt(t1 * t1 + b * b)
+//   const lambda0 = t0 + t2,
+//     lambda1 = t0 - t2
+//   const theta = () => {
+//     if (b == 0) {
+//       if (a >= c) {
+//         return 0
+//       } else {
+//         return Math.PI / 2
+//       }
+//     } else {
+//       return Math.atan2(lambda0 - a, b)
+//     }
+//   }
+//   const sigma = cma.sigma
+//   postMessage([
+//     "ellipseParams",
+//     Float32Array.from([lambda0 * sigma, lambda1 * sigma, theta()]),
+//   ])
+// }
+
+function getEllipsePts() {
+  const BD = cma.BD,
+    mean = cma.mean,
+    sigma = cma.sigma
+  const pts = []
+  for (let i = 0; i < ellipseTestPts.length; i++) {
+    const offset = BD.mulVec(ellipseTestPts[i])
+    for (let j = 0; j < 2; j++) {
+      pts.push(mean[j] + sigma * offset[j])
+    }
+  }
+  return Float32Array.from(pts)
+}
+
+// function sqMatMulVec(A,v) {
+//   const res = new Float32Array(2).fill(0)
+//   for (let i = 0; i < 2; i++) {
+//     for (let j = 0; j < 2; j++) {
+//       // res[i] += this.get(i, j) * v[j]
+//       res[i] += A[2*i+j] * v[j]
+//     }
+//   }
+//   return res
+// }

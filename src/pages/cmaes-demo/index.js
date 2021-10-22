@@ -5,14 +5,15 @@ import { canvasDim, markerR, nVizWorkers, objFnInit } from "./globals.js"
 import { drawCanvas } from "./../../js/draw-canvas.js"
 
 let zoom = 1,
+  meansPathArr,
+  ellipseParams,
   solutions,
-  solutionsFresh = false
-
-let scoreLimsReceived,
+  solutionsFresh = false,
+  ellipsePts,
+  scoreLimsReceived,
   minScore,
   maxScore,
   imagesReceived = 0,
-  meansPathArr = new Float32Array(0),
   displayMeansPath = false
 
 const canvasFnGradient = document.getElementById("canvas-bg")
@@ -27,6 +28,9 @@ for (let canvas of [canvasCmaSols, canvasFnGradient, canvasCmaMeans]) {
 
 const ctxFnGradient = canvasFnGradient.getContext("2d")
 const ctxCmaSols = canvasCmaSols.getContext("2d")
+ctxCmaSols.strokeStyle = "rgba(255, 255, 255, 0.8)"
+ctxCmaSols.lineWidth = 3
+// ctxCmaSols.fillStyle = "black"
 const ctxCmaMeans = canvasCmaMeans.getContext("2d")
 const imageDataBg = ctxFnGradient.createImageData(canvasDim, canvasDim)
 const imageDataBgData = imageDataBg.data
@@ -113,7 +117,9 @@ const cmaWorker = new Worker(new URL("./cma-worker.js", import.meta.url))
 cmaWorker.onmessage = (e) => {
   const [info, msg] = e.data
   if (info === "solutions") {
-    solutions = msg.slice()
+    solutions = msg[0].slice()
+    ellipsePts = msg[1].slice()
+    console.log("sols")
     solutionsFresh = true
     checkDrawReady()
   } else if (info === "means") {
@@ -124,6 +130,9 @@ cmaWorker.onmessage = (e) => {
   } else if (info === "zoom") {
     zoom = msg
     updateZoom()
+  } else if (info === "ellipsePts") {
+    ellipsePts = msg.slice()
+    console.log(ellipsePts)
   }
 }
 
@@ -153,6 +162,25 @@ function draw() {
     ctxCmaSols.clearRect(0, 0, canvasCmaSols.width, canvasCmaSols.height)
     ctxCmaSols.save()
     ctxCmaSols.translate(0.5 * canvasCmaSols.width, 0.5 * canvasCmaSols.height)
+    // const mpaLength = meansPathArr.length
+    // ctxCmaSols.beginPath()
+    // ctxCmaSols.ellipse(
+    //   meansPathArr[mpaLength - 2],
+    //   meansPathArr[mpaLength - 1],
+    //   ellipseParams[0] * zoom,
+    //   ellipseParams[1] * zoom,
+    //   ellipseParams[2],
+    //   0,
+    //   2 * Math.PI
+    // )
+    // ctxCmaSols.stroke()
+    ctxCmaSols.beginPath()
+    ctxCmaSols.moveTo(ellipsePts[0], ellipsePts[1])
+    for (let i = 2; i < ellipsePts.length; i += 2) {
+      ctxCmaSols.lineTo(ellipsePts[i], ellipsePts[i + 1])
+    }
+    ctxCmaSols.closePath()
+    ctxCmaSols.stroke()
     for (let i = 0; i < solutions.length; i += 2) {
       drawMarker(solutions[i], solutions[i + 1], ctxCmaSols)
     }
