@@ -4,7 +4,7 @@ export const nWorkers = 4,
   cmaSigma = 0.1,
   displayCreatureCount = 16
 
-export const w = 1400,
+export const w = 800,
   h = 400,
   ts = 1 / 60,
   metersToPixels = 400,
@@ -14,7 +14,7 @@ export const w = 1400,
   // shoulderHMeters = -0.4932,
   shoulderHMeters = -0.55,
   // cameraW = 0.5 * w,
-  cameraInitX = 1100,
+  cameraOffset = 300,
   cameraInitY = h - canvasGroundH,
   upperLegPts = [
     0.2518, -0.2119, -0.0261, 0.073, -0.0795, 0.0168, 0.2209, -0.2437,

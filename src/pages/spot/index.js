@@ -4,7 +4,8 @@ require("./index.css")
 import {
   w,
   h,
-  cameraInitX,
+  // cameraInitX,
+  cameraOffset,
   cameraInitY,
   nWorkers,
   epLen,
@@ -16,7 +17,7 @@ import { drawSpot } from "./draw.js"
 
 let creaturesPerWorker,
   // positionsHistory,
-  cameraX = cameraInitX,
+  // cameraX = cameraInitX,
   // weightCount,
   // biasCount,
   // popsize,
@@ -151,7 +152,7 @@ function loop() {
     )
 
   const currentMaxX = positions[0]
-  cameraX = Math.round(-currentMaxX * metersToPixels + cameraInitX)
+  const cameraX = Math.round(-currentMaxX * metersToPixels - cameraOffset + w)
 
   ctxTerrain.clearRect(0, 0, w, terrainH)
   const terrainX = cameraX % w
@@ -165,10 +166,6 @@ function loop() {
     ctxTerrain.lineTo(currentX, terrainH)
     ctxTerrain.stroke()
   }
-
-  // for (let i = 0; i < positions.length; i += 7) {
-  //   drawSpot(cameraX, cameraInitY, ...positions.slice(i, i + 7), ctxFG)
-  // }
 
   for (let i = displayCreatureCount - 1; i >= 0; i--) {
     const idx = i * 7
