@@ -12,6 +12,8 @@ import {
 } from "./draw-sim.js"
 import { cmaMeanInit } from "./cmaMeanInit.js"
 
+import _ from "lodash"
+
 // // https://stackoverflow.com/questions/62954570/javascript-feature-detect-module-support-for-web-workers
 let population
 let trainingWorker,
@@ -137,9 +139,18 @@ initSimWorkers(terrainPts)
 
 const tippyCanvas = document.getElementById("tippy-canvas"),
   tippyCTX = tippyCanvas.getContext("2d")
-
-tippyCanvas.width = globals.w
 tippyCanvas.height = globals.h
+
+const tippyCanvasDiv = document.getElementById("tippy-canvas-div")
+
+function resizeTippyCanvas() {
+  const newWidth = 2 * Math.floor(tippyCanvasDiv.offsetWidth / 2)
+  tippyCanvas.width = newWidth
+}
+resizeTippyCanvas()
+window.onresize = _.debounce(() => {
+  resizeTippyCanvas()
+}, 200)
 
 // const chartCanvas = document.getElementById("chart-canvas"),
 //   chartCTX = chartCanvas.getContext("2d"),

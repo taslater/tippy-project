@@ -3,10 +3,16 @@ body {
   color: white;
 }
 
-#tippy-canvas {
-  background-color: skyblue;
+#tippy-canvas-div {
+  display: flex;
+  justify-content: center;
 }
 
-#chart-canvas {
-  background-color: rgb(240, 240, 240);
+#tippy-canvas {
+  background-color: skyblue;
+  /* width: 100%; */
 }
+
+/* #chart-canvas {
+  background-color: rgb(240, 240, 240);
+} */
