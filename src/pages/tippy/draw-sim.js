@@ -40,9 +40,10 @@ export function drawTippy(
       chassisPosCurrent[0] - massCenter[0],
       chassisPosCurrent[1] - massCenter[1],
     ]
+  const halfW = ctx.canvas.width / 2
   const viewLimitsX = [
-    massCenter[0] - (0.5 * globals.w) / scale,
-    massCenter[0] + (0.5 * globals.w) / scale,
+    massCenter[0] - halfW / scale,
+    massCenter[0] + halfW / scale,
   ]
 
   let visibleTerrainIdxMin = xPosToTerrainIdx(viewLimitsX[0]),
@@ -57,7 +58,7 @@ export function drawTippy(
   ctx.save()
   ctx.translate(center[0], center[1])
 
-  const drawBottom = globals.h - center[1]
+  const drawBottom = ctx.canvas.height - center[1]
   if (visibleTerrainIdxMax != 1) {
     ctx.beginPath()
     ctx.moveTo(
@@ -167,18 +168,20 @@ function drawWall(idx, terrainPts, massCenter, drawBottom, ctx) {
 }
 
 export function drawInputBar(target, ctx) {
+  const h = ctx.canvas.height,
+    halfW = ctx.canvas.width / 2
   ctx.lineWidth = 3
   ctx.fillStyle = "red"
   ctx.fillRect(
-    0.5 * globals.w,
-    globals.h - 1.2 * globals.barHeight,
+    halfW,
+    h - 1.2 * globals.barHeight,
     globals.barMax * target,
     globals.barHeight
   )
 
   ctx.beginPath()
-  ctx.moveTo(0.5 * globals.w, globals.h - 0.2 * globals.barHeight)
-  ctx.lineTo(0.5 * globals.w, globals.h - 1.2 * globals.barHeight)
+  ctx.moveTo(halfW, h - 0.2 * globals.barHeight)
+  ctx.lineTo(halfW, h - 1.2 * globals.barHeight)
   ctx.stroke()
 }
 

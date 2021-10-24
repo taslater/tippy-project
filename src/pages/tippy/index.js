@@ -247,13 +247,15 @@ Box2DFactory().then((b2) => {
   const corrRecord = []
 
   function b2Loop() {
-    tippyCTX.clearRect(0, 0, globals.w, globals.h)
+    const w = tippyCTX.canvas.width,
+      h = tippyCTX.canvas.height
+    tippyCTX.clearRect(0, 0, w, h)
     const tippy = population.tippys[0]
     drawTippy(
       tippy,
       terrainPts,
       scale,
-      [0.5 * globals.w, 0.65 * globals.h],
+      [0.5 * w, 0.65 * h],
       tippyCTX,
       chassisCanvas,
       wheelCanvas,
