@@ -11,16 +11,12 @@ import {
   epLen,
   metersToPixels,
   displayCreatureCount,
+  // canvasGroundH,
 } from "./globals.js"
-
 import { drawSpot } from "./draw.js"
+import _ from "lodash"
 
 let creaturesPerWorker,
-  // positionsHistory,
-  // cameraX = cameraInitX,
-  // weightCount,
-  // biasCount,
-  // popsize,
   scoreSolutionInfos = [],
   scoresReceived = 0,
   historiesReceived = 0,
@@ -39,26 +35,41 @@ const canvasFG = document.getElementById("canvas-fg"),
   ctxFG = canvasFG.getContext("2d"),
   canvasBG = document.getElementById("canvas-bg"),
   ctxBG = canvasBG.getContext("2d"),
-  canvasTerrain = document.getElementById("canvas-terrain"),
-  ctxTerrain = canvasTerrain.getContext("2d"),
+  canvasMarkers = document.getElementById("canvas-markers"),
+  ctxMarkers = canvasMarkers.getContext("2d"),
   canvasDiv = document.getElementById("canvas-div")
 
-canvasDiv.setAttribute("style", `height:${h + 10}px;`)
+// canvasDiv.setAttribute("height", h.toString())
+console.log(canvasDiv)
+
+function resizeDemoCanvas() {
+  // const newWidth = 2 * Math.floor(canvasDiv.offsetWidth / 2)
+  // tippyCanvas.width = newWidth
+  console.log(canvasDiv.offsetWidth)
+}
+resizeDemoCanvas()
+window.onresize = _.debounce(() => {
+  resizeDemoCanvas()
+}, 200)
+
+canvasDiv.setAttribute("style", `height:${h}px;`)
 canvasFG.width = w
 canvasFG.height = h
 canvasBG.width = w
 canvasBG.height = h
 
-const terrainH = 40
+const markerH = 40
 
-canvasTerrain.width = w
-canvasTerrain.height = terrainH
-canvasTerrain.setAttribute("style", `top:${h}px;`)
+canvasMarkers.width = w
+canvasMarkers.height = markerH
+canvasMarkers.setAttribute("style", `top:${cameraInitY - markerH}px;`)
 
 ctxBG.fillStyle = "skyblue"
 ctxBG.fillRect(0, 0, w, h)
 ctxBG.fillStyle = "green"
 ctxBG.fillRect(0, cameraInitY - 2, w, h)
+
+const loadingMessageElement = document.getElementById("loading-message")
 
 const cma_worker = new Worker(new URL("./cma-worker.js", import.meta.url))
 let cmaInitialized = false
@@ -114,6 +125,7 @@ for (let i = 0; i < nWorkers; i++) {
         historiesReceived = 0
         if (!looping) {
           looping = true
+          loadingMessageElement.innerHTML = ""
           requestAnimationFrame(loop)
         }
       }
@@ -154,17 +166,17 @@ function loop() {
   const currentMaxX = positions[0]
   const cameraX = Math.round(-currentMaxX * metersToPixels - cameraOffset + w)
 
-  ctxTerrain.clearRect(0, 0, w, terrainH)
+  ctxMarkers.clearRect(0, 0, w, markerH)
   const terrainX = cameraX % w
   for (let i = 0; i < 20; i++) {
     let currentX = (terrainX - 100 * i) % w
     if (currentX < 0) {
       currentX += w
     }
-    ctxTerrain.beginPath()
-    ctxTerrain.moveTo(currentX, 0)
-    ctxTerrain.lineTo(currentX, terrainH)
-    ctxTerrain.stroke()
+    ctxMarkers.beginPath()
+    ctxMarkers.moveTo(currentX, 0)
+    ctxMarkers.lineTo(currentX, markerH)
+    ctxMarkers.stroke()
   }
 
   for (let i = displayCreatureCount - 1; i >= 0; i--) {

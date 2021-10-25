@@ -47,7 +47,7 @@ function sendNewSolutions() {
       solutions[i * solution.length + j] = solution[j]
     }
   }
-  console.log(cma.mean)
+  // console.log(cma.mean)
   if (!badSolution) {
     postMessage(["solutions", solutions])
   } else {
