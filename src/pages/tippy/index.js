@@ -1,4 +1,4 @@
-require("../../main.css")
+require("../../main.scss")
 require("./index.css")
 import Box2DFactory from "box2d-wasm/dist/es/Box2D"
 import { generateTerrainPts, Population, updateDirection } from "./tippy.js"

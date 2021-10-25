@@ -56,10 +56,21 @@ module.exports = {
   module: {
     rules: [
       // css
-      // { test: /\.css$/, use: ["style-loader", "css-loader"] },
+      {
+        test: /\.s[ac]ss$/i,
+        use: [
+          // Creates `style` nodes from JS strings
+          "style-loader",
+          // // Translates CSS into CommonJS
+          "css-loader",
+          // Compiles Sass to CSS
+          "sass-loader",
+        ],
+      },
       {
         // https://webpack.js.org/loaders/css-loader/#root
         test: /\.css$/i,
+        // test: /\.s[ac]ss$/i,
         use: [MiniCssExtractPlugin.loader, "css-loader"],
       },
       // images

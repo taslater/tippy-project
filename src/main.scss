@@ -1,3 +1,9 @@
+// *,
+// *::after,
+// *::before {
+//   box-sizing: border-box;
+// }
+
 html,
 body {
   height: 100vh;
@@ -31,14 +37,53 @@ nav {
 
 header {
   grid-area: main;
-  display: block;
+  // display: flex;
   text-align: center;
+  /* position: relative; */
+  // justify-content: center;
+  // align-items: center;
+  // text-align: center;
+  /* text-align: center; */
   /* overflow: auto; */
+}
+
+.masthead {
+  display: inline-block;
+  position: relative;
+  text-transform: uppercase;
+  // line-height: 0.9;
+
+  &::before,
+  &::after {
+    content: "";
+    display: block;
+    position: absolute;
+  }
+
+  &::before {
+    width: 100vw;
+    height: 20%;
+    top: 40%;
+    left: 50%;
+    transform: translateX(-50%);
+    background-color: black;
+    z-index: -2;
+  }
+
+  &::after {
+    background-color: white;
+    height: 100%;
+    width: 100%;
+    z-index: -1;
+    top: 0;
+    left: -1em;
+    padding-left: 2em;
+  }
 }
 
 main {
   grid-area: main;
-  padding: 10px 20px 10px 20px;
+  padding: 10px 30px 10px 30px;
   overflow: auto;
 }
 
@@ -75,20 +120,6 @@ nav > ul > li > a {
   border: 1px solid rgba(0, 0, 0, 0.1);
   border-radius: 3px;
   background-color: rgba(0, 0, 0, 0.1);
-}
-
-.page-title {
-  font-size: 6em;
-  font-weight: bold;
-  text-align: center;
-  word-break: break-all;
-  line-height: 0.85;
-}
-
-.page-title > i {
-  display: block;
-  font-size: 2em;
-  margin-bottom: 0.3em;
 }
 
 footer {

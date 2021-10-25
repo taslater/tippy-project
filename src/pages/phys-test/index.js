@@ -1,4 +1,4 @@
-require("../../main.css")
+require("../../main.scss")
 require("./index.css")
 import { canvasW, canvasH } from "./globals.js"
 

@@ -1,5 +1,5 @@
 require("./index.css")
-require("../../main.css")
+require("../../main.scss")
 // https://github.com/bestiejs/benchmark.js/issues/128#issuecomment-271615298
 // https://stackoverflow.com/a/43313089
 import _ from "lodash"
