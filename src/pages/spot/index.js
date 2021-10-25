@@ -65,9 +65,9 @@ canvasMarkers.height = markerH
 canvasMarkers.setAttribute("style", `top:${cameraInitY - markerH}px;`)
 
 ctxBG.fillStyle = "skyblue"
-ctxBG.fillRect(0, 0, w, h)
+ctxBG.fillRect(0, 0, ctxBG.canvas.width, ctxBG.canvas.height)
 ctxBG.fillStyle = "green"
-ctxBG.fillRect(0, cameraInitY - 2, w, h)
+ctxBG.fillRect(0, cameraInitY - 2, ctxBG.canvas.width, ctxBG.canvas.height)
 
 const loadingMessageElement = document.getElementById("loading-message")
 let nDots = 0
@@ -167,7 +167,7 @@ cma_worker.onmessage = (e) => {
 }
 
 function loop() {
-  ctxFG.clearRect(0, 0, w, h)
+  ctxFG.clearRect(0, 0, ctxFG.canvas.width, ctxFG.canvas.height)
   const positionsLength = displayCreatureCount * 7,
     positionsHistory = drawHistories[currentHistory],
     positions = positionsHistory.slice(
@@ -178,16 +178,16 @@ function loop() {
   const currentMaxX = positions[0]
   const cameraX = Math.round(-currentMaxX * metersToPixels - cameraOffset + w)
 
-  ctxMarkers.clearRect(0, 0, w, markerH)
-  const terrainX = cameraX % w
+  ctxMarkers.clearRect(0, 0, ctxMarkers.canvas.width, ctxMarkers.canvas.height)
+  const terrainX = cameraX % ctxMarkers.canvas.width
   for (let i = 0; i < 20; i++) {
-    let currentX = (terrainX - 100 * i) % w
+    let currentX = (terrainX - 100 * i) % ctxMarkers.canvas.width
     if (currentX < 0) {
-      currentX += w
+      currentX += ctxMarkers.canvas.width
     }
     ctxMarkers.beginPath()
     ctxMarkers.moveTo(currentX, 0)
-    ctxMarkers.lineTo(currentX, markerH)
+    ctxMarkers.lineTo(currentX, ctxMarkers.canvas.height)
     ctxMarkers.stroke()
   }
 
