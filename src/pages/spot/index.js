@@ -58,7 +58,7 @@ canvasFG.height = h
 canvasBG.width = w
 canvasBG.height = h
 
-const markerH = 40
+const markerH = 50
 
 canvasMarkers.width = w
 canvasMarkers.height = markerH
@@ -70,6 +70,17 @@ ctxBG.fillStyle = "green"
 ctxBG.fillRect(0, cameraInitY - 2, w, h)
 
 const loadingMessageElement = document.getElementById("loading-message")
+let nDots = 0
+
+function setLoadingMessage() {
+  const msgLen = loadingMessageElement.innerHTML.length,
+    nDotsNext = (nDots + 1) % 4
+  nDots = nDotsNext
+  // console.log(`msg len: ${msgLen}`)
+  loadingMessageElement.innerHTML = `Loading${".".repeat(nDotsNext)}`
+}
+
+const loadingMessageLoopId = setInterval(setLoadingMessage, 1000)
 
 const cma_worker = new Worker(new URL("./cma-worker.js", import.meta.url))
 let cmaInitialized = false
@@ -125,6 +136,7 @@ for (let i = 0; i < nWorkers; i++) {
         historiesReceived = 0
         if (!looping) {
           looping = true
+          clearInterval(loadingMessageLoopId)
           loadingMessageElement.innerHTML = ""
           requestAnimationFrame(loop)
         }
