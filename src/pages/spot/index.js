@@ -4,7 +4,8 @@ require("./index.css")
 import {
   w,
   h,
-  // cameraInitX,
+  markerH,
+  canvasGroundH,
   cameraOffset,
   cameraInitY,
   nWorkers,
@@ -39,35 +40,36 @@ const canvasFG = document.getElementById("canvas-fg"),
   ctxMarkers = canvasMarkers.getContext("2d"),
   canvasDiv = document.getElementById("canvas-div")
 
-// canvasDiv.setAttribute("height", h.toString())
-console.log(canvasDiv)
+canvasDiv.setAttribute("style", `height:${h}px;`)
+canvasFG.height = h
+canvasBG.height = h
+canvasMarkers.height = markerH
+canvasMarkers.setAttribute("style", `top:${cameraInitY - markerH}px;`)
+
+// canvasFG.width = w
+// canvasBG.width = w
+// canvasMarkers.width = w
 
 function resizeDemoCanvas() {
-  // const newWidth = 2 * Math.floor(canvasDiv.offsetWidth / 2)
-  // tippyCanvas.width = newWidth
-  console.log(canvasDiv.offsetWidth)
+  const newWidth = canvasDiv.offsetWidth
+  canvasFG.width = newWidth
+  canvasBG.width = newWidth
+  canvasMarkers.width = newWidth
+
+  ctxBG.fillStyle = "skyblue"
+  ctxBG.fillRect(0, 0, newWidth, h)
+  ctxBG.fillStyle = "green"
+  ctxBG.fillRect(0, cameraInitY - 2, newWidth, canvasGroundH)
 }
 resizeDemoCanvas()
 window.onresize = _.debounce(() => {
   resizeDemoCanvas()
 }, 200)
 
-canvasDiv.setAttribute("style", `height:${h}px;`)
-canvasFG.width = w
-canvasFG.height = h
-canvasBG.width = w
-canvasBG.height = h
-
-const markerH = 50
-
-canvasMarkers.width = w
-canvasMarkers.height = markerH
-canvasMarkers.setAttribute("style", `top:${cameraInitY - markerH}px;`)
-
-ctxBG.fillStyle = "skyblue"
-ctxBG.fillRect(0, 0, ctxBG.canvas.width, ctxBG.canvas.height)
-ctxBG.fillStyle = "green"
-ctxBG.fillRect(0, cameraInitY - 2, ctxBG.canvas.width, ctxBG.canvas.height)
+// ctxBG.fillStyle = "skyblue"
+// ctxBG.fillRect(0, 0, ctxBG.canvas.width, ctxBG.canvas.height)
+// ctxBG.fillStyle = "green"
+// ctxBG.fillRect(0, cameraInitY - 2, ctxBG.canvas.width, ctxBG.canvas.height)
 
 const loadingMessageElement = document.getElementById("loading-message")
 let nDots = 0
@@ -176,7 +178,9 @@ function loop() {
     )
 
   const currentMaxX = positions[0]
-  const cameraX = Math.round(-currentMaxX * metersToPixels - cameraOffset + w)
+  const cameraX = Math.round(
+    -currentMaxX * metersToPixels - cameraOffset + canvasFG.width
+  )
 
   ctxMarkers.clearRect(0, 0, ctxMarkers.canvas.width, ctxMarkers.canvas.height)
   const terrainX = cameraX % ctxMarkers.canvas.width
