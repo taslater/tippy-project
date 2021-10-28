@@ -1,5 +1,6 @@
-require("../../main.scss")
 require("./index.css")
+require("../../main.scss")
+require("../partials/nav.js")
 import Box2DFactory from "box2d-wasm/dist/es/Box2D"
 import { generateTerrainPts, Population, updateDirection } from "./tippy.js"
 import { globals } from "./globals.js"
@@ -144,11 +145,12 @@ tippyCanvas.height = globals.h
 const tippyCanvasDiv = document.getElementById("tippy-canvas-div")
 
 function resizeTippyCanvas() {
-  const newWidth = 2 * Math.floor(tippyCanvasDiv.offsetWidth / 2)
+  const newWidth = 2 * Math.floor(window.innerWidth / 2)
   tippyCanvas.width = newWidth
 }
 resizeTippyCanvas()
 window.onresize = _.debounce(() => {
+  console.log("resizing")
   resizeTippyCanvas()
 }, 200)
 

@@ -55,6 +55,10 @@ module.exports = {
   // loaders
   module: {
     rules: [
+      {
+        test: /\.(svg|eot|woff|woff2|ttf)$/,
+        type: "asset/inline",
+      },
       // css
       {
         test: /\.s[ac]ss$/i,
@@ -63,6 +67,8 @@ module.exports = {
           "style-loader",
           // // Translates CSS into CommonJS
           "css-loader",
+          // Help Sass rewrite urls
+          "resolve-url-loader",
           // Compiles Sass to CSS
           "sass-loader",
         ],

@@ -1,5 +1,6 @@
-require("../../main.scss")
 require("./index.css")
+require("../../main.scss")
+require("../partials/nav.js")
 
 import {
   w,
@@ -51,7 +52,8 @@ canvasMarkers.setAttribute("style", `top:${cameraInitY - markerH}px;`)
 // canvasMarkers.width = w
 
 function resizeDemoCanvas() {
-  const newWidth = canvasDiv.offsetWidth
+  // const newWidth = canvasDiv.offsetWidth
+  const newWidth = window.innerWidth
   canvasFG.width = newWidth
   canvasBG.width = newWidth
   canvasMarkers.width = newWidth

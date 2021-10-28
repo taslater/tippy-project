@@ -1,5 +1,7 @@
 require("./index.css")
 require("../../main.scss")
+require("../partials/nav.js")
+
 import { objFns } from "./obj-fns.js"
 import { canvasDim, markerR, nVizWorkers, objFnInit } from "./globals.js"
 import { drawCanvas } from "./../../js/draw-canvas.js"
