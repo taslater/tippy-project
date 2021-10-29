@@ -1,19 +1,18 @@
 //importing font awesome
-// $fa-font-path: "../../../node_modules/@fortawesome/fontawesome-free/webfonts";
 $fa-font-path: "@fortawesome/fontawesome-free/webfonts";
-// $fa-font-path: "../node_modules/@fortawesome/fontawesome-free/webfonts/";
-// @use "../node_modules/@fortawesome/fontawesome-free/scss/fontawesome.scss";
 @use "@fortawesome/fontawesome-free/scss/fontawesome.scss";
 @use "@fortawesome/fontawesome-free/scss/regular.scss";
 @use "@fortawesome/fontawesome-free/scss/solid.scss";
-// @import "../../../node_modules/@fortawesome/fontawesome-free/scss/fontawesome.scss";
-// @import "../../../node_modules/@fortawesome/fontawesome-free/scss/solid.scss";
 
 :root {
-  --main-bg-clr: rgb(237, 237, 237);
-  --nav-bg-clr: rgb(43, 43, 43);
+  --main-bg-clr: rgb(230, 230, 230);
+  --nav-bg-clr: rgb(40, 40, 40);
   --nav-font-clr: white;
-  --nav-font-hover-clr: black;
+}
+
+:export {
+  navBgClr: var(--nav-bg-clr);
+  navFontClr: var(--nav-font-clr);
 }
 
 *,
@@ -30,7 +29,7 @@ html {
 
 body {
   min-height: 100%;
-  // background-color: #ffffff;
+  background: var(--main-bg-clr);
   // color: #2c302f;
   // font-weight: 400;
   font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
@@ -46,96 +45,89 @@ body {
 nav {
   grid-area: nav;
   position: relative;
-  background-color: var(--nav-bg-clr);
+  background: var(--nav-bg-clr);
+  color: var(--nav-font-clr);
   text-transform: uppercase;
-
-  .nav-menu {
-    display: flex;
-    flex-wrap: wrap;
-    justify-content: space-between;
-    list-style-type: none;
-
-    .nav-logo {
-      font-size: 2rem;
-    }
-
-    .nav-item {
-      font-size: 1.25rem;
-      width: 100%;
-      text-align: right;
-      display: none;
-      // visibility: hidden;
-      order: 3;
-    }
-
-    .nav-toggle {
-      order: 1;
-      font-size: 1.25rem;
-    }
-
-    li {
-      // transition: all 0.5s ease;
-      a {
-        display: block;
-        padding: 1rem 0.5rem;
-        background: var(--nav-bg-clr);
-        color: var(--nav-font-clr);
-        text-decoration: none;
-        // font-size: 1.25rem;
-      }
-      a:hover {
-        color: var(--nav-font-hover-clr);
-        background: var(--nav-font-clr);
-      }
-    }
+  padding-block: 0.5rem;
+  padding-inline: 1rem;
+  a {
+    color: var(--nav-font-clr);
+    padding: 0.125rem 0.25rem;
+    border-radius: 0.25rem;
+    text-decoration: none;
+    transition: all 0.1s ease;
   }
 }
 
+.nav-item,
+.nav-logo {
+  a {
+    border-radius: 0.25rem;
+  }
+  a:hover,
+  .current-page {
+    color: var(--nav-bg-clr);
+    background: var(--nav-font-clr);
+  }
+}
+
+.nav-menu {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  align-items: center;
+  list-style-type: none;
+}
+
+.nav-logo {
+  font-size: 2.5rem;
+  font-weight: 300;
+}
+
+.nav-item {
+  font-size: 1.25rem;
+  margin-block: 0.5rem;
+  width: 100%;
+  text-align: right;
+  display: none;
+  order: 3;
+}
+
+.active .nav-item {
+  display: inline-block;
+}
+
+.nav-toggle {
+  order: 1;
+  font-size: 1.25rem;
+}
+
 @media screen and (min-width: 960px) {
-  nav {
-    .nav-menu {
-      align-items: flex-start;
-      flex-wrap: nowrap;
-      background: none;
+  .nav-menu {
+    align-items: flex-start;
+    flex-wrap: nowrap;
+    background: none;
+  }
 
-      .nav-logo {
-        order: 0;
-      }
+  .nav-logo {
+    order: 0;
+  }
 
-      .nav-item {
-        order: 1;
-        position: relative;
-        display: block;
-        width: auto;
-      }
+  .nav-item {
+    order: 1;
+    position: relative;
+    display: block;
+    width: auto;
+  }
 
-      .nav-toggle {
-        display: none;
-      }
-    }
+  .nav-toggle {
+    display: none;
   }
 }
 
 p {
   padding-top: 1rem;
 }
-
-// nav > ul > li {
-//   display: block;
-// }
-
-// nav > ul > li > a {
-//   display: block;
-//   color: white;
-//   font-size: 18px;
-//   padding: 10px 20px;
-//   font-weight: bold;
-//   text-shadow: 0 -1px black;
-//   text-decoration: none;
-//   border: 1px solid rgba(0, 0, 0, 0.1);
-//   border-radius: 3px;
-//   background-color: rgba(0, 0, 0, 0.1);
-// }
 
 // header {
 //   grid-area: main;
@@ -196,16 +188,14 @@ p {
 // }
 
 footer {
-  // grid-area: footer;
+  grid-area: footer;
   background: var(--nav-bg-clr);
-  // flex: 1 0 auto;
   padding: 2em;
   text-transform: uppercase;
 
   ul {
     list-style: none;
-    // display: flex;
-    // justify-content: space-evenly;
+    text-align: center;
   }
 
   a {
@@ -215,21 +205,3 @@ footer {
     text-transform: uppercase;
   }
 }
-
-// footer > ul {
-//   list-style: none;
-//   padding: 0;
-//   margin: 0;
-//   display: flex;
-//   justify-content: space-evenly;
-// }
-
-// footer > ul > li {
-//   display: block;
-// }
-
-// footer > ul > li > a {
-//   display: block;
-//   font-size: 21px;
-//   padding: 10px 20px 40px 20px;
-// }

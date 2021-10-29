@@ -1,4 +1,10 @@
 // https://webdesign.tutsplus.com/articles/best-practices-for-responsive-dropdown-menus--cms-35212
+const hrefCurrent = window.location.pathname.split("/").slice(-1)[0],
+  currentPageLinks = document.querySelectorAll(`a[href='${hrefCurrent}']`)
+for (let link of currentPageLinks) {
+  link.classList.add("current-page")
+  link.href = "javascript:void(0)"
+}
 
 const toggle = document.querySelector(".nav-toggle")
 const menu = document.querySelector(".nav-menu")
@@ -9,17 +15,9 @@ function toggleMenu() {
   if (menu.classList.contains("active")) {
     menu.classList.remove("active")
     toggle.querySelector("a").innerHTML = "<i class='fas fa-bars'></i>"
-    for (let item of items) {
-      item.style.display = "none"
-      // item.style.visibility = "hidden"
-    }
   } else {
     menu.classList.add("active")
     toggle.querySelector("a").innerHTML = "<i class='fas fa-times'></i>"
-    for (let item of items) {
-      item.style.display = "block"
-      // item.style.visibility = "visible"
-    }
   }
 }
 
