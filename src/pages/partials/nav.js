@@ -1,3 +1,5 @@
+// https://webdesign.tutsplus.com/articles/best-practices-for-responsive-dropdown-menus--cms-35212
+
 const toggle = document.querySelector(".nav-toggle")
 const menu = document.querySelector(".nav-menu")
 const items = document.querySelectorAll(".nav-item")
