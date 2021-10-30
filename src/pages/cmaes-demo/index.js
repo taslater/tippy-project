@@ -26,7 +26,8 @@ let canvasHalfDim,
   quarterBgImageData,
   quarterBgImageDataData,
   objFnName = objFnInit,
-  zoom = 1,
+  zoomCurrent = 1,
+  zoomNext = 1,
   evalLimCurrent,
   evalLimNext
 
@@ -102,7 +103,8 @@ fnSelect.addEventListener("change", (e) => {
   cmaHistory.reset(objFnName)
   cmaWorker.postMessage(["objFnName", objFnName])
   evalLimCurrent = undefined
-  zoom = 1
+  zoomCurrent = 1
+  zoomNext = 1
 })
 
 const popMultSelect = document.getElementById("pop-mult-select")
@@ -113,19 +115,21 @@ popMultSelect.addEventListener("change", (e) => {
 
 const zoomInBtn = document.getElementById("zoom-in")
 zoomInBtn.addEventListener("click", () => {
-  zoom *= 1.1
+  // evalLimCurrent /= 1.1
+  zoomNext *= 1.1
   updateVizWorker()
 })
 
 const zoomOutBtn = document.getElementById("zoom-out")
 zoomOutBtn.addEventListener("click", () => {
-  zoom /= 1.1
+  // evalLimCurrent *= 1.1
+  zoomNext /= 1.1
   updateVizWorker()
 })
 
 const stepBtn = document.getElementById("step-btn")
 stepBtn.addEventListener("click", () => {
-  zoom = 1
+  zoomNext = 1
   cmaWorker.postMessage(["step", true])
 })
 
@@ -154,7 +158,7 @@ function updateVizWorker() {
     // cmaHistory.gradientWorkerMessage(canvasHalfDim, zoom)
     {
       canvasHalfDim,
-      evalHalfLim: evalLimCurrent / zoom,
+      evalHalfLim: evalLimCurrent / zoomCurrent,
       objFnName,
     }
   )
@@ -183,7 +187,8 @@ function updateVizWorker() {
 function draw() {
   requestAnimationFrame(() => {
     const historyStep = cmaHistory.currentStep
-    const viewStepInv = 1.0 / getViewStep(evalLimCurrent, canvasHalfDim)
+    const viewStepInv =
+      1.0 / getViewStep(evalLimCurrent / zoomCurrent, canvasHalfDim)
     // if (displayMeansPath) {
     //   console.log(meansPathArr)
     //   drawMeans(meansPathArr, cmaMeansCTX)
@@ -301,18 +306,20 @@ function initVizWorker() {
   vizWorker.onmessage = (e) => {
     updateImageData(e.data)
     draw()
-    if (evalLimCurrent > evalLimNext) {
-      evalLimCurrent /= zoomStepMag
-      if (evalLimCurrent < evalLimNext) {
-        evalLimCurrent = evalLimNext
-      }
-    } else if (evalLimCurrent < evalLimNext) {
-      evalLimCurrent *= zoomStepMag
-      if (evalLimCurrent > evalLimNext) {
-        evalLimCurrent = evalLimNext
-      }
-    }
-    if (evalLimCurrent !== evalLimNext) {
+    // if (evalLimCurrent > evalLimNext) {
+    //   evalLimCurrent /= zoomStepMag
+    //   if (evalLimCurrent < evalLimNext) {
+    //     evalLimCurrent = evalLimNext
+    //   }
+    // } else if (evalLimCurrent < evalLimNext) {
+    //   evalLimCurrent *= zoomStepMag
+    //   if (evalLimCurrent > evalLimNext) {
+    //     evalLimCurrent = evalLimNext
+    //   }
+    // }
+    zoomCurrent = scaleToward(zoomCurrent, zoomNext)
+    evalLimCurrent = scaleToward(evalLimCurrent, evalLimNext)
+    if (evalLimCurrent !== evalLimNext || zoomCurrent !== zoomNext) {
       updateVizWorker()
     }
   }
@@ -326,4 +333,19 @@ function updateImageData(rgbPixelData) {
     }
     arrayIdx += 4
   }
+}
+
+function scaleToward(current, next) {
+  if (current > next) {
+    current /= zoomStepMag
+    if (current < next) {
+      current = next
+    }
+  } else if (current < next) {
+    current *= zoomStepMag
+    if (current > next) {
+      current = next
+    }
+  }
+  return current
 }
