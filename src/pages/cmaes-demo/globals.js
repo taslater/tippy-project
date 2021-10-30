@@ -9,7 +9,6 @@ export const nVizWorkers = 1,
   zoomStepMag = 1.05,
   nEllipseTestPts = 32,
   solutionMargin = 1.25,
-  getViewStep = (evalHalfLim, canvasHalfDim, zoom) => {
-    const nonZoomed = evalHalfLim / (canvasHalfDim - 0.5)
-    return nonZoomed / zoom
+  getViewStep = (evalHalfLim, canvasHalfDim) => {
+    return evalHalfLim / (canvasHalfDim - 0.5)
   }

@@ -3,7 +3,13 @@ require("../../main.scss")
 require("../partials/nav.js")
 
 import { objFns } from "./obj-fns.js"
-import { canvasDimMax, markerR, objFnInit, getViewStep } from "./globals.js"
+import {
+  canvasDimMax,
+  markerR,
+  objFnInit,
+  getViewStep,
+  zoomStepMag,
+} from "./globals.js"
 import { CMAHistory } from "./cmaHistory.js"
 import { drawCanvas } from "./../../js/draw-canvas.js"
 
@@ -16,10 +22,13 @@ initVizWorker()
 const cmaWorker = new Worker(new URL("./cma-worker.js", import.meta.url))
 initCmaWorker()
 
-let zoom = 1,
-  canvasHalfDim,
+let canvasHalfDim,
   quarterBgImageData,
-  quarterBgImageDataData
+  quarterBgImageDataData,
+  objFnName = objFnInit,
+  zoom = 1,
+  evalLimCurrent,
+  evalLimNext
 
 const fnGradientCanvas = document.getElementById("canvas-bg"),
   cmaSolsCanvas = document.getElementById("canvas-fg"),
@@ -89,9 +98,10 @@ for (let k of Object.keys(objFns)) {
 }
 
 fnSelect.addEventListener("change", (e) => {
-  const objFnName = e.target.value
+  objFnName = e.target.value
   cmaHistory.reset(objFnName)
   cmaWorker.postMessage(["objFnName", objFnName])
+  evalLimCurrent = undefined
   zoom = 1
 })
 
@@ -128,13 +138,26 @@ meansPathCheck.addEventListener("change", () => {
 function initCmaWorker() {
   cmaWorker.onmessage = (e) => {
     cmaHistory.add(e.data)
-    console.log(cmaHistory)
+    const evalHalfLim = cmaHistory.evalHalfLim
+    if (typeof evalLimCurrent === "undefined") {
+      evalLimCurrent = evalHalfLim
+      evalLimNext = evalHalfLim
+    } else {
+      evalLimNext = evalHalfLim
+    }
     updateVizWorker()
   }
 }
 
 function updateVizWorker() {
-  vizWorker.postMessage(cmaHistory.gradientWorkerMessage(canvasHalfDim, zoom))
+  vizWorker.postMessage(
+    // cmaHistory.gradientWorkerMessage(canvasHalfDim, zoom)
+    {
+      canvasHalfDim,
+      evalHalfLim: evalLimCurrent / zoom,
+      objFnName,
+    }
+  )
 }
 
 // function drawMeans(means, ctx) {
@@ -160,10 +183,7 @@ function updateVizWorker() {
 function draw() {
   requestAnimationFrame(() => {
     const historyStep = cmaHistory.currentStep
-    const viewStepInv =
-      1.0 /
-      getViewStep(cmaHistory.evalHalfLims[historyStep], canvasHalfDim, zoom)
-    // (canvasHalfDim - 0.5) / cmaHistory.evalHalfLims[historyStep]
+    const viewStepInv = 1.0 / getViewStep(evalLimCurrent, canvasHalfDim)
     // if (displayMeansPath) {
     //   console.log(meansPathArr)
     //   drawMeans(meansPathArr, cmaMeansCTX)
@@ -181,8 +201,8 @@ function draw() {
     cmaSolsCTX.clearRect(0, 0, cmaSolsCanvas.width, cmaSolsCanvas.height)
     cmaSolsCTX.save()
     cmaSolsCTX.translate(0.5 * cmaSolsCanvas.width, 0.5 * cmaSolsCanvas.height)
-    drawSolutions(historyStep, viewStepInv)
     drawEllipse(historyStep, viewStepInv)
+    drawSolutions(historyStep, viewStepInv)
     cmaSolsCTX.restore()
 
     // solutionsFresh = false
@@ -281,6 +301,20 @@ function initVizWorker() {
   vizWorker.onmessage = (e) => {
     updateImageData(e.data)
     draw()
+    if (evalLimCurrent > evalLimNext) {
+      evalLimCurrent /= zoomStepMag
+      if (evalLimCurrent < evalLimNext) {
+        evalLimCurrent = evalLimNext
+      }
+    } else if (evalLimCurrent < evalLimNext) {
+      evalLimCurrent *= zoomStepMag
+      if (evalLimCurrent > evalLimNext) {
+        evalLimCurrent = evalLimNext
+      }
+    }
+    if (evalLimCurrent !== evalLimNext) {
+      updateVizWorker()
+    }
   }
 }
 

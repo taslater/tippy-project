@@ -24,12 +24,15 @@ export class CMAHistory {
     this.currentStep++
   }
 
-  gradientWorkerMessage(canvasHalfDim, zoom) {
-    return {
-      canvasHalfDim,
-      zoom,
-      evalHalfLim: this.evalHalfLims[this.currentStep],
-      objFnName: this.objFnName,
-    }
+  // gradientWorkerMessage(canvasHalfDim, zoom) {
+  //   return {
+  //     canvasHalfDim,
+  //     evalHalfLim: this.evalHalfLims[this.currentStep] / zoom,
+  //     objFnName: this.objFnName,
+  //   }
+  // }
+
+  get evalHalfLim() {
+    return this.evalHalfLims[this.currentStep]
   }
 }

@@ -8,16 +8,15 @@ const nPixelsMax = (canvasDimMax * canvasDimMax) / 4,
 
 function calculatePixels({ canvasHalfDim, evalHalfLim, objFnName, zoom }) {
   const objFn = objFns[objFnName],
-    viewStep = getViewStep(evalHalfLim, canvasHalfDim, zoom),
-    evalHalfLimZoomed = evalHalfLim / zoom
+    viewStep = getViewStep(evalHalfLim, canvasHalfDim)
   let minScore = Infinity,
     maxScore = -Infinity,
     scoreIdx = 0
 
   for (let yIdx = 0; yIdx < canvasHalfDim; yIdx++) {
-    const y = -evalHalfLimZoomed + yIdx * viewStep
+    const y = -evalHalfLim + yIdx * viewStep
     for (let xIdx = 0; xIdx < canvasHalfDim; xIdx++) {
-      const x = -evalHalfLimZoomed + xIdx * viewStep
+      const x = -evalHalfLim + xIdx * viewStep
       const score = objFn([x, y])
       if (score < minScore) {
         minScore = score
