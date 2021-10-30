@@ -1,10 +1,11 @@
 import { objFns } from "./obj-fns.js"
-import { canvasDim, nVizWorkers, objFnInit } from "./globals.js"
+import { canvasDim as _canvasDim, nVizWorkers, objFnInit } from "./globals.js"
 import { scoreToTurboRGB } from "./matlab_turbo_colormap.js"
 
 let myID,
-  centerX = 0,
-  centerY = 0,
+  canvasDim = _canvasDim,
+  imageDataArray,
+  scores,
   zoom = 1,
   objFn,
   objFnLim,
@@ -14,10 +15,14 @@ let myID,
   viewY0,
   viewStep
 
-const imageDataArray = new Uint8ClampedArray(
+initDataArrays()
+
+function initDataArrays() {
+  imageDataArray = new Uint8ClampedArray(
     (3 * canvasDim * canvasDim) / nVizWorkers
-  ),
+  )
   scores = new Float32Array((canvasDim * canvasDim) / nVizWorkers)
+}
 
 // 1. which worker am i?
 // 2. which objective function?
@@ -25,7 +30,12 @@ const imageDataArray = new Uint8ClampedArray(
 
 onmessage = (e) => {
   const [info, msg] = e.data
-  if (info === "workerID") {
+  if (info === "canvasDim") {
+    canvasDim = msg
+    initDataArrays()
+    updateEvalLims()
+    updateScores()
+  } else if (info === "workerID") {
     myID = msg
     // init()
     updateObjFn(objFnInit)
@@ -34,10 +44,6 @@ onmessage = (e) => {
     zoom = msg
     updateEvalLims()
     updateScores()
-  } else if (info === "center") {
-    centerX = msg[0]
-    centerY = msg[1]
-    console.log(centerX, centerY)
   } else if (info === "fnName") {
     zoom = 1
     updateObjFn(msg)
@@ -57,9 +63,11 @@ function updateObjFn(objFnName) {
 
 function updateEvalLims() {
   const viewLimHalf = objFnLim / zoom
-  viewX0 = centerX - viewLimHalf
+  // viewX0 = centerX - viewLimHalf
+  viewX0 = -viewLimHalf
   viewStep = (2 * viewLimHalf) / (canvasDim - 1)
-  viewY0 = centerY - viewLimHalf + (myID * canvasDim * viewStep) / nVizWorkers
+  // viewY0 = centerY - viewLimHalf + (myID * canvasDim * viewStep) / nVizWorkers
+  viewY0 = -viewLimHalf + (myID * canvasDim * viewStep) / nVizWorkers
 }
 
 function updateScores() {

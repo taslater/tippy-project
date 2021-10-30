@@ -2,24 +2,16 @@ import { CMA, getDefaultCMAPopsize } from "../../js/cma-lib.js"
 import { objFns } from "./obj-fns.js"
 import {
   objFnInit,
-  canvasDim,
   meanRadiusMin,
   meanRadiusMax,
   sigmaScale,
-  zoomStepMag,
   nEllipseTestPts,
 } from "./globals.js"
 
-let zoom = 1,
-  zoomNext = 1,
-  canvasScale,
-  objFnName = objFnInit,
+let objFnName = objFnInit,
   objFnLim,
   objFn,
   cma,
-  solutionsHistory,
-  meanHistory,
-  ellipsePts,
   popsizeMultiplier = 1
 
 // IIFE
@@ -36,43 +28,52 @@ cmaInit()
 
 onmessage = (e) => {
   const [info, msg] = e.data
-  if (info === "fnName") {
+  // if (info === "canvasDim") {
+  //   canvasDim = msg
+  //   updateCanvasScale()
+  //   sendMeanHistory()
+  //   sendCurrentSolutions()
+  // } else
+  if (info === "objFnName") {
     objFnName = msg
     cmaInit()
   } else if (info === "popMult") {
     popsizeMultiplier = msg
     cmaInit()
   } else if (info === "step") {
-    if (zoom != zoomNext) {
-      return
-    }
+    // console.log("got step")
+    // if (zoom != zoomNext) {
+    //   console.log("bad zoom", zoom, zoomNext)
+    //   return
+    // }
     cmaStep()
-  } else if (info === "drawReady") {
-    if (zoom != zoomNext) {
-      transitionStep()
-    }
-  } else if (info === "zoom") {
-    zoom = msg
-    zoomNext = msg
-    // console.log("cma got zoom", zoom)
-    updateCanvasScale()
-    sendMeanHistory()
-    sendCurrentSolutions()
   }
+  // else if (info === "drawReady") {
+  //   if (zoom != zoomNext) {
+  //     transitionStep()
+  //   }
+  // } else if (info === "zoom") {
+  //   zoom = msg
+  //   zoomNext = msg
+  //   // console.log("cma got zoom", zoom)
+  //   updateCanvasScale()
+  //   sendMeanHistory()
+  //   sendCurrentSolutions()
+  // }
 }
 
 function cmaInit() {
-  zoom = 1
-  zoomNext = zoom
+  // zoom = 1
+  // zoomNext = zoom
   updateObjFn(objFnName)
-  solutionsHistory = []
-  meanHistory = []
+  // solutionsHistory = []
+  // meanHistory = []
   const cmaSigma = sigmaScale * objFnLim
   const randRadians = 2 * Math.PI * Math.random()
   const randRadius =
     objFnLim * (meanRadiusMin + Math.random() * (meanRadiusMax - meanRadiusMin))
-  console.log("objFnLim", objFnLim)
-  console.log("randRadius", randRadius)
+  // console.log("objFnLim", objFnLim)
+  // console.log("randRadius", randRadius)
   const cmaMean = Float32Array.from([
     randRadius * Math.cos(randRadians),
     randRadius * Math.sin(randRadians),
@@ -84,7 +85,9 @@ function cmaInit() {
 
 function cmaStep() {
   const solutions = new Float32Array(2 * cma.popsize),
-    sol_score_array = []
+    scores = new Float32Array(cma.popsize),
+    sol_score_array = [],
+    message = {}
   let scoreSum = 0,
     maxAbsDim = 0
   for (let i = 0; i < cma.popsize; i++) {
@@ -92,6 +95,7 @@ function cmaStep() {
       score = objFn(solution)
     scoreSum += score
     sol_score_array.push({ solution, score })
+    scores[i] = score
     for (let j = 0; j < 2; j++) {
       const solDim = solution[j],
         absSolDim = Math.abs(solDim)
@@ -101,9 +105,15 @@ function cmaStep() {
       solutions[2 * i + j] = solDim
     }
   }
-  solutionsHistory.push(solutions)
-  ellipsePts = getEllipsePts()
-  meanHistory.push(...cma.mean.slice())
+  message.solutions = solutions.slice()
+  message.scores = scores.slice()
+  message.ellipsePts = getEllipsePts().slice()
+  message.mean = cma.mean.slice()
+  message.maxAbsDim = maxAbsDim
+  postMessage(message)
+  // solutionsHistory.push(solutions)
+  // ellipsePts = getEllipsePts()
+  // meanHistory.push(...cma.mean.slice())
   // const cmaMats = [""]
   // for (let prop of ["B", "BD", "C"]) {
   //   cmaMats.push(cma[prop].data.toString(), "\n")
@@ -112,59 +122,62 @@ function cmaStep() {
   // sendEllipseParams()
   // sendEllipsePts()
   // sendMeanHistory()
-  transitionStep()
+  // zoomNext = (0.8 * objFnLim) / maxAbsDim
+  // transitionStep()
+
   cma.tell(sol_score_array)
 
-  console.log("mean score:", scoreSum / cma.popsize)
-
-  zoomNext = (0.8 * objFnLim) / maxAbsDim
+  // console.log("mean score:", scoreSum / cma.popsize)
 }
 
-function sendMeanHistory() {
-  const meanHistoryTyped = Float32Array.from(
-    meanHistory.map((v) => v * canvasScale)
-  )
-  postMessage(["means", meanHistoryTyped])
-}
+// function sendMeanHistory() {
+//   const meanHistoryTyped = Float32Array.from(
+//     meanHistory.map((v) => v * canvasScale)
+//   )
+//   postMessage(["means", meanHistoryTyped])
+// }
 
-function sendCurrentSolutions() {
-  const currentSolution = solutionsHistory[solutionsHistory.length - 1]
-  postMessage([
-    "solutions",
-    [
-      currentSolution.map((v) => Math.round(v * canvasScale)),
-      ellipsePts.map((v) => Math.round(v * canvasScale)),
-    ],
-  ])
-}
+// function sendCurrentSolutions() {
+//   console.log("sending solutions")
+//   const currentSolution = solutionsHistory[solutionsHistory.length - 1]
+//   postMessage([
+//     "solutions",
+//     [
+//       currentSolution.map((v) => Math.round(v * canvasScale)),
+//       ellipsePts.map((v) => Math.round(v * canvasScale)),
+//     ],
+//   ])
+// }
 
 function updateObjFn(objFnName) {
   objFn = objFns[objFnName]
   objFnLim = objFn.xyLim
-  updateCanvasScale()
+  // updateCanvasScale()
 }
 
-function updateCanvasScale() {
-  canvasScale = (zoom * 0.5 * canvasDim) / objFnLim
-}
+// function updateCanvasScale() {
+//   canvasScale = (zoom * 0.5 * canvasDim) / objFnLim
+// }
 
-function transitionStep() {
-  if (zoom < zoomNext) {
-    zoom *= zoomStepMag
-    if (zoom > zoomNext) {
-      zoom = zoomNext
-    }
-  } else {
-    zoom /= zoomStepMag
-    if (zoom < zoomNext) {
-      zoom = zoomNext
-    }
-  }
-  postMessage(["zoom", zoom])
-  updateCanvasScale()
-  sendMeanHistory()
-  sendCurrentSolutions()
-}
+// function transitionStep() {
+//   console.log("transition step before", zoom, zoomNext)
+//   if (zoom < zoomNext) {
+//     zoom *= zoomStepMag
+//     if (zoom > zoomNext) {
+//       zoom = zoomNext
+//     }
+//   } else {
+//     zoom /= zoomStepMag
+//     if (zoom < zoomNext) {
+//       zoom = zoomNext
+//     }
+//   }
+//   console.log("transition step after", zoom, zoomNext)
+//   postMessage(["zoom", zoom])
+//   updateCanvasScale()
+//   sendMeanHistory()
+//   sendCurrentSolutions()
+// }
 
 // function sendEllipseParams() {
 //   const [a, b, _, c] = cma.C.data.slice()
@@ -204,14 +217,3 @@ function getEllipsePts() {
   }
   return Float32Array.from(pts)
 }
-
-// function sqMatMulVec(A,v) {
-//   const res = new Float32Array(2).fill(0)
-//   for (let i = 0; i < 2; i++) {
-//     for (let j = 0; j < 2; j++) {
-//       // res[i] += this.get(i, j) * v[j]
-//       res[i] += A[2*i+j] * v[j]
-//     }
-//   }
-//   return res
-// }

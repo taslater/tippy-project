@@ -142,8 +142,6 @@ const tippyCanvas = document.getElementById("tippy-canvas"),
   tippyCTX = tippyCanvas.getContext("2d")
 tippyCanvas.height = globals.h
 
-const tippyCanvasDiv = document.getElementById("tippy-canvas-div")
-
 function resizeTippyCanvas() {
   const newWidth = 2 * Math.floor(window.innerWidth / 2)
   tippyCanvas.width = newWidth
