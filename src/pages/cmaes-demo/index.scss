@@ -29,11 +29,6 @@
   position: relative;
 }
 
-#controls-div {
-  grid-area: controls;
-  padding: 1em;
-}
-
 .zoom-div {
   z-index: 4;
   position: absolute;
@@ -62,12 +57,35 @@
   border: none;
 }
 
-.dropdown-div {
+.controls-container {
+  grid-area: controls;
+  margin: 1rem;
   display: flex;
   flex-direction: column;
-  background: green;
+  gap: 1rem;
+  border: 1px dotted green;
+}
+
+.settings-container {
+  display: flex;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  flex-direction: row;
+  border: 1px dotted red;
+}
+
+.dropdown-div {
+  display: inline-flex;
+  flex-direction: column;
+  background: white;
   // max-width: 90%;
 }
+
+// .path-check-div {
+//   // display: inline-flex;
+//   // align-items: flex-start;
+//   // max-width: 90vw;
+// }
 
 .play-btn-wrapper {
   text-align: center;
@@ -91,10 +109,6 @@
       margin: 0.5rem;
     }
   }
-}
-
-.path-check-div {
-  max-width: 90vw;
 }
 
 #chart-canvas-div {

@@ -1,11 +1,27 @@
-// https://webdesign.tutsplus.com/articles/best-practices-for-responsive-dropdown-menus--cms-35212
-const hrefCurrent = window.location.pathname.split("/").slice(-1)[0],
-  currentPageLinks = document.querySelectorAll(`a[href='${hrefCurrent}']`)
-for (let link of currentPageLinks) {
-  link.classList.add("current-page")
-  link.href = "javascript:void(0)"
+// highlight and disable current page link
+const windowPathnameCleaned = window.location.pathname
+  .split("/")
+  .slice(-1)[0]
+  .replace("#", "")
+  .replace("index.html", "")
+
+for (let li of document.getElementsByClassName("nav-menu")[0].children) {
+  const link = li.firstChild,
+    href = link.href
+  if (!href) continue
+
+  const hrefCleaned = href
+    .split("/")
+    .slice(-1)[0]
+    .replace("#", "")
+    .replace("index.html", "")
+  if (windowPathnameCleaned == hrefCleaned) {
+    link.classList.add("current-page")
+    link.href = "javascript:void(0)"
+  }
 }
 
+// https://webdesign.tutsplus.com/articles/best-practices-for-responsive-dropdown-menus--cms-35212
 const toggle = document.querySelector(".nav-toggle")
 const menu = document.querySelector(".nav-menu")
 const items = document.querySelectorAll(".nav-item")

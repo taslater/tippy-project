@@ -33,33 +33,37 @@
             <canvas id="canvas-chart"></canvas>
           </div>
 
-          <div id="controls-div">
-            <div id="obj-fn-select-div" class="dropdown-div">
-              <label for="obj-fn-select">Objective function:</label>
-              <select name="obj-fn-select" id="obj-fn-select"></select>
-            </div>
+          <div class="controls-container">
+            <div class="settings-container">
+              <div id="obj-fn-select-div" class="dropdown-div">
+                <label for="obj-fn-select">Objective function:</label>
+                <select name="obj-fn-select" id="obj-fn-select"></select>
+              </div>
 
-            <div id="pop-mult-select-div" class="dropdown-div">
-              <label for="pop-mult-select">Population multiplier:</label>
-              <select name="pop-mult-select" id="pop-mult-select">
-                <option value="0.5">Half</option>
-                <option value="1" selected>Default</option>
-                <option value="2">Double</option>
-                <option value="4">Quadruple</option>
-              </select>
-            </div>
-            <div class="path-check-div">
-              <input
-                type="checkbox"
-                id="means-path-checkbox"
-                name="means-path-checkbox"
-              />
-              <label for="means-path-checkbox">
-                Show optimizer search path</label
-              ><br />
+              <div id="pop-mult-select-div" class="dropdown-div">
+                <label for="pop-mult-select">Population multiplier:</label>
+                <select name="pop-mult-select" id="pop-mult-select">
+                  <option value="0.5">Half</option>
+                  <option value="1" selected>Default</option>
+                  <option value="2">Double</option>
+                  <option value="4">Quadruple</option>
+                </select>
+              </div>
+              <div class="path-check-div">
+                <input
+                  type="checkbox"
+                  id="means-path-checkbox"
+                  name="means-path-checkbox"
+                />
+                <label for="means-path-checkbox"> Show search path</label>
+              </div>
             </div>
             <div class="play-btn-wrapper">
               <div class="play-btn-div">
+                <button id="restart-btn">
+                  <i class="fas fa-redo"></i>
+                </button>
+                <hr />
                 <button id="step-bwd-btn">
                   <i class="fas fa-step-backward"></i>
                 </button>

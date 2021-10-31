@@ -5,7 +5,7 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>cmaes-demo</title>
-  <script defer src="cmaes-demo.4fe0991a6825b39f5ad3.js"></script></head>
+  <script defer src="cmaes-demo.01d0f2b2c231c7e556c5.js"></script></head>
   <body>
     <nav>
   <ul class="nav-menu">
@@ -13,9 +13,6 @@
     <li class="nav-item"><a href="cmaes-demo.html">Optimizer Demo</a></li>
     <li class="nav-item"><a href="spot.html">Complex Limbs</a></li>
     <li class="nav-item"><a href="tippy.html">Interactive Agent</a></li>
-    <!-- <li class="nav-item">
-      <a href="https://github.com/taslater/tippy-project">Github</a>
-    </li> -->
     <li class="nav-toggle">
       <a href="#"><i class="fas fa-bars"></i></a>
     </li>
@@ -47,33 +44,37 @@
             <canvas id="canvas-chart"></canvas>
           </div>
 
-          <div id="controls-div">
-            <div id="obj-fn-select-div" class="dropdown-div">
-              <label for="obj-fn-select">Objective function:</label>
-              <select name="obj-fn-select" id="obj-fn-select"></select>
-            </div>
+          <div class="controls-container">
+            <div class="settings-container">
+              <div id="obj-fn-select-div" class="dropdown-div">
+                <label for="obj-fn-select">Objective function:</label>
+                <select name="obj-fn-select" id="obj-fn-select"></select>
+              </div>
 
-            <div id="pop-mult-select-div" class="dropdown-div">
-              <label for="pop-mult-select">Population multiplier:</label>
-              <select name="pop-mult-select" id="pop-mult-select">
-                <option value="0.5">Half</option>
-                <option value="1" selected>Default</option>
-                <option value="2">Double</option>
-                <option value="4">Quadruple</option>
-              </select>
-            </div>
-            <div class="path-check-div">
-              <input
-                type="checkbox"
-                id="means-path-checkbox"
-                name="means-path-checkbox"
-              />
-              <label for="means-path-checkbox">
-                Show optimizer search path</label
-              ><br />
+              <div id="pop-mult-select-div" class="dropdown-div">
+                <label for="pop-mult-select">Population multiplier:</label>
+                <select name="pop-mult-select" id="pop-mult-select">
+                  <option value="0.5">Half</option>
+                  <option value="1" selected>Default</option>
+                  <option value="2">Double</option>
+                  <option value="4">Quadruple</option>
+                </select>
+              </div>
+              <div class="path-check-div">
+                <input
+                  type="checkbox"
+                  id="means-path-checkbox"
+                  name="means-path-checkbox"
+                />
+                <label for="means-path-checkbox"> Show search path</label>
+              </div>
             </div>
             <div class="play-btn-wrapper">
               <div class="play-btn-div">
+                <button id="restart-btn">
+                  <i class="fas fa-redo"></i>
+                </button>
+                <hr />
                 <button id="step-bwd-btn">
                   <i class="fas fa-step-backward"></i>
                 </button>

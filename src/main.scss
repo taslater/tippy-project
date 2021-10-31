@@ -148,17 +148,20 @@ p {
   padding-top: 1rem;
 }
 
-// header {
-//   grid-area: main;
-//   // display: flex;
-//   text-align: center;
-//   /* position: relative; */
-//   // justify-content: center;
-//   // align-items: center;
-//   // text-align: center;
-//   /* text-align: center; */
-//   /* overflow: auto; */
-// }
+.masthead {
+  // grid-area: main;
+  // display: flex;
+  text-align: center;
+  font-size: min(2.5rem, 8vw);
+  font-weight: 300;
+  margin: 1rem;
+  /* position: relative; */
+  // justify-content: center;
+  // align-items: center;
+  // text-align: center;
+  /* text-align: center; */
+  /* overflow: auto; */
+}
 
 // .masthead {
 //   display: inline-block;
