@@ -18,8 +18,15 @@
             <canvas id="canvas-bg" class="obj-fn-canvas"></canvas>
             <canvas id="canvas-fg" class="obj-fn-canvas"></canvas>
             <canvas id="canvas-means" class="obj-fn-canvas"></canvas>
-            <button id="zoom-in" class="zoom">&#43;</button>
-            <button id="zoom-out" class="zoom">&#8722;</button>
+            <div class="zoom-div">
+              <button id="zoom-in" class="zoom-btn">
+                <i class="fas fa-plus"></i>
+              </button>
+              <hr />
+              <button id="zoom-out" class="zoom-btn">
+                <i class="fas fa-minus"></i>
+              </button>
+            </div>
           </div>
 
           <div id="chart-canvas-div">
@@ -27,13 +34,13 @@
           </div>
 
           <div id="controls-div">
-            <div id="obj-fn-select-div">
-              <label for="obj-fn-select">Choose a function:</label>
+            <div id="obj-fn-select-div" class="dropdown-div">
+              <label for="obj-fn-select">Objective function:</label>
               <select name="obj-fn-select" id="obj-fn-select"></select>
             </div>
 
-            <div id="pop-mult-select-div">
-              <label for="pop-mult-select">Population size:</label>
+            <div id="pop-mult-select-div" class="dropdown-div">
+              <label for="pop-mult-select">Population multiplier:</label>
               <select name="pop-mult-select" id="pop-mult-select">
                 <option value="0.5">Half</option>
                 <option value="1" selected>Default</option>
@@ -41,10 +48,7 @@
                 <option value="4">Quadruple</option>
               </select>
             </div>
-            <div>
-              <button id="step-btn">Step</button>
-            </div>
-            <div>
+            <div class="path-check-div">
               <input
                 type="checkbox"
                 id="means-path-checkbox"
@@ -53,6 +57,19 @@
               <label for="means-path-checkbox">
                 Show optimizer search path</label
               ><br />
+            </div>
+            <div class="play-btn-wrapper">
+              <div class="play-btn-div">
+                <button id="step-bwd-btn">
+                  <i class="fas fa-step-backward"></i>
+                </button>
+                <button id="play-btn" class="paused">
+                  <i class="fas fa-play"></i>
+                </button>
+                <button id="step-fwd-btn">
+                  <i class="fas fa-step-forward"></i>
+                </button>
+              </div>
             </div>
           </div>
         </div>

@@ -1,0 +1,125 @@
+.demo-grid-container {
+  display: flex;
+  justify-content: center;
+}
+
+.demo-grid {
+  background-color: pink;
+  display: grid;
+  grid-template-columns: max-content;
+  margin: 0 auto;
+  grid-template-areas:
+    "controls"
+    "obj-fn"
+    "chart";
+}
+
+@media (min-width: 900px) {
+  .demo-grid {
+    grid-template-areas:
+      "obj-fn controls"
+      "chart chart";
+  }
+}
+
+#obj-fn-canvas-div {
+  grid-area: obj-fn;
+  position: relative;
+}
+
+#controls-div {
+  grid-area: controls;
+  padding: 1em;
+}
+
+.zoom-div {
+  z-index: 4;
+  position: absolute;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  top: 0.75rem;
+  left: 0.75rem;
+  background: rgba(255, 255, 255, 0.8);
+  border-radius: 0.5rem;
+
+  hr {
+    width: 1.5rem;
+    height: 0.125rem;
+    margin: 0 auto;
+    background-color: gray;
+    border: none;
+  }
+}
+
+.zoom-btn {
+  width: 2rem;
+  height: 2rem;
+  font-size: 1.25rem;
+  background: none;
+  border: none;
+}
+
+.dropdown-div {
+  display: flex;
+  flex-direction: column;
+  background: green;
+  // max-width: 90%;
+}
+
+.play-btn-wrapper {
+  text-align: center;
+}
+
+.play-btn-div {
+  display: inline-flex;
+  background: white;
+  border: 1px solid black;
+  border-radius: 0.5rem;
+  margin: 0 auto;
+
+  button {
+    // flex-direction: row;
+    border: none;
+    background: none;
+    // padding: 0;
+    // text-align: center;
+    i {
+      font-size: 1.75rem;
+      margin: 0.5rem;
+    }
+  }
+}
+
+.path-check-div {
+  max-width: 90vw;
+}
+
+#chart-canvas-div {
+  grid-area: chart;
+}
+
+#canvas-chart {
+  width: 100vw;
+  height: 200px;
+}
+
+.obj-fn-canvas {
+  position: absolute;
+}
+
+#canvas-bg {
+  z-index: 1;
+}
+
+#canvas-means {
+  z-index: 2;
+}
+
+#canvas-fg {
+  z-index: 3;
+}
+
+#canvas-chart {
+  background-color: white;
+}

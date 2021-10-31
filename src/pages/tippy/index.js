@@ -1,4 +1,4 @@
-require("./index.css")
+require("./index.scss")
 require("../../main.scss")
 require("../partials/nav.js")
 import Box2DFactory from "box2d-wasm/dist/es/Box2D"

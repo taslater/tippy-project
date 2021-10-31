@@ -24,14 +24,6 @@ export class CMAHistory {
     this.currentStep++
   }
 
-  // gradientWorkerMessage(canvasHalfDim, zoom) {
-  //   return {
-  //     canvasHalfDim,
-  //     evalHalfLim: this.evalHalfLims[this.currentStep] / zoom,
-  //     objFnName: this.objFnName,
-  //   }
-  // }
-
   get evalHalfLim() {
     return this.evalHalfLims[this.currentStep]
   }

@@ -1,0 +1,28 @@
+#canvas-div {
+  position: relative;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+#loading-message {
+  z-index: 4;
+}
+
+.demo-canvas {
+  position: absolute;
+  top: 0;
+  /* border: solid 1px; */
+}
+
+#canvas-fg {
+  z-index: 2;
+}
+
+#canvas-terrain {
+  z-index: 1;
+}
+
+#canvas-bg {
+  z-index: 0;
+}

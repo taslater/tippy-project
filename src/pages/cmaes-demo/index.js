@@ -1,4 +1,4 @@
-require("./index.css")
+require("./index.scss")
 require("../../main.scss")
 require("../partials/nav.js")
 
@@ -29,7 +29,8 @@ let canvasHalfDim,
   zoomCurrent = 1,
   zoomNext = 1,
   evalLimCurrent,
-  evalLimNext
+  evalLimNext,
+  playing = false
 
 const fnGradientCanvas = document.getElementById("canvas-bg"),
   cmaSolsCanvas = document.getElementById("canvas-fg"),
@@ -50,39 +51,6 @@ window.onresize = _.debounce(() => {
   resizeDemoCanvas()
 }, 200)
 resizeDemoCanvas()
-
-function resizeDemoCanvas() {
-  const newCanvasHalfDim = Math.min(
-    canvasDimMax / 2,
-    Math.floor(Math.min(window.innerWidth, window.innerHeight) / 2)
-  )
-  if (newCanvasHalfDim == canvasHalfDim) {
-    return
-  }
-  canvasHalfDim = newCanvasHalfDim
-  const canvasDim = 2 * canvasHalfDim
-  // console.log({ canvasDim })
-  canvasDiv.setAttribute("style", `width:${canvasDim}px; height:${canvasDim}px`)
-  for (let canvas of [cmaSolsCanvas, fnGradientCanvas, cmaMeansCanvas]) {
-    canvas.width = canvasDim
-    canvas.height = canvasDim
-  }
-  fnGradientQuarterCanvas.height = canvasHalfDim
-  fnGradientQuarterCanvas.width = canvasHalfDim
-  quarterBgImageData = fnGradientQuarterCTX.createImageData(
-    canvasHalfDim,
-    canvasHalfDim
-  )
-  quarterBgImageDataData = quarterBgImageData.data
-  quarterBgImageDataData.fill(255)
-  if (cmaHistory.currentStep > -1) {
-    updateVizWorker()
-  }
-}
-
-// const bgImageData = fnGradientCTX.createImageData(canvasDim, canvasDim),
-//   bgImageDataData = bgImageData.data
-// bgImageDataData.fill(255)
 
 const markerCanvas = getMarkerCanvas()
 
@@ -127,7 +95,7 @@ zoomOutBtn.addEventListener("click", () => {
   updateVizWorker()
 })
 
-const stepBtn = document.getElementById("step-btn")
+const stepBtn = document.getElementById("step-fwd-btn")
 stepBtn.addEventListener("click", () => {
   zoomNext = 1
   cmaWorker.postMessage(["step", true])
@@ -348,4 +316,33 @@ function scaleToward(current, next) {
     }
   }
   return current
+}
+
+function resizeDemoCanvas() {
+  const newCanvasHalfDim = Math.min(
+    canvasDimMax / 2,
+    Math.floor(Math.min(window.innerWidth, window.innerHeight) / 2)
+  )
+  if (newCanvasHalfDim == canvasHalfDim) {
+    return
+  }
+  canvasHalfDim = newCanvasHalfDim
+  const canvasDim = 2 * canvasHalfDim
+  // console.log({ canvasDim })
+  canvasDiv.setAttribute("style", `width:${canvasDim}px; height:${canvasDim}px`)
+  for (let canvas of [cmaSolsCanvas, fnGradientCanvas, cmaMeansCanvas]) {
+    canvas.width = canvasDim
+    canvas.height = canvasDim
+  }
+  fnGradientQuarterCanvas.height = canvasHalfDim
+  fnGradientQuarterCanvas.width = canvasHalfDim
+  quarterBgImageData = fnGradientQuarterCTX.createImageData(
+    canvasHalfDim,
+    canvasHalfDim
+  )
+  quarterBgImageDataData = quarterBgImageData.data
+  quarterBgImageDataData.fill(255)
+  if (cmaHistory.currentStep > -1) {
+    updateVizWorker()
+  }
 }
