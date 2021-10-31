@@ -1,6 +1,8 @@
 .demo-grid-container {
   display: flex;
   justify-content: center;
+  max-width: 100vw;
+  overflow: hidden;
 }
 
 .demo-grid {
@@ -14,7 +16,7 @@
     "chart";
 }
 
-@media (min-width: 900px) {
+@media (min-width: 1000px) {
   .demo-grid {
     grid-template-areas:
       "obj-fn controls"
