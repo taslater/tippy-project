@@ -1,0 +1,172 @@
+$setting-width: 10rem;
+
+.demo-grid-container {
+  display: flex;
+  justify-content: center;
+  background: lightgray;
+  // max-width: 100vw;
+  // overflow: hidden;
+}
+
+.demo-grid {
+  // background: pink;
+  display: grid;
+  grid-template-columns: max-content;
+  margin: 0 auto;
+  grid-template-areas:
+    "controls"
+    "obj-fn"
+    "chart";
+}
+
+#obj-fn-canvas-div {
+  grid-area: obj-fn;
+  position: relative;
+  margin: 0 auto;
+}
+
+.obj-fn-canvas {
+  grid-area: obj-fn;
+  position: relative;
+}
+
+.zoom-div {
+  z-index: 4;
+  position: absolute;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  top: 0.75rem;
+  left: 0.75rem;
+  background: rgba(255, 255, 255, 0.8);
+  border-radius: 0.5rem;
+
+  hr {
+    width: 1.5rem;
+    height: 0.125rem;
+    margin: 0 auto;
+    background-color: gray;
+    border: none;
+  }
+}
+
+.zoom-btn {
+  width: 2rem;
+  height: 2rem;
+  font-size: 1.25rem;
+  background: none;
+  border: none;
+}
+
+.controls-container {
+  grid-area: controls;
+  // padding: 1rem;
+  max-width: 100vw;
+  text-align: center;
+}
+
+.settings-container {
+  // display: inline-block;
+  display: inline-grid;
+  grid-template-columns: repeat(auto-fit, $setting-width);
+  min-width: 50vw;
+  // min-width: $setting-width;
+  // min-width: 50%;
+
+  padding: 1rem;
+  grid-gap: 1rem;
+  // border: 1px dotted red;
+}
+
+.setting-wrapper {
+  width: $setting-width;
+  text-align: left;
+  select {
+    width: $setting-width;
+  }
+}
+
+.play-btn-wrapper {
+  text-align: center;
+  margin-bottom: 1rem;
+}
+
+.play-btn-container {
+  display: inline-flex;
+  background: white;
+  border: 1px solid black;
+  border-radius: 0.5rem;
+  // margin: 0 auto;
+
+  button {
+    // flex-direction: row;
+    border: none;
+    background: none;
+    // padding: 0;
+    // text-align: center;
+    i {
+      font-size: 1.75rem;
+      margin: 0.5rem;
+    }
+  }
+}
+
+#chart-canvas-div {
+  grid-area: chart;
+}
+
+#canvas-chart {
+  width: 100vw;
+  height: 200px;
+}
+
+.obj-fn-canvas {
+  position: absolute;
+}
+
+#canvas-bg {
+  z-index: 1;
+}
+
+#canvas-means {
+  z-index: 2;
+}
+
+#canvas-fg {
+  z-index: 3;
+}
+
+#canvas-chart {
+  background-color: white;
+}
+
+@media (min-width: 1000px) {
+  .demo-grid {
+    grid-template-columns: auto 1fr;
+    grid-template-areas:
+      "obj-fn controls"
+      "chart chart";
+  }
+
+  .controls-container {
+    text-align: left;
+  }
+
+  .settings-container {
+    min-width: $setting-width;
+    //   // max-width: min-content;
+    //   //   display: flex;
+    //   //   flex-direction: row;
+    //   //   // grid-template-columns: repeat(auto-fit, $setting-width);
+    //   // min-width: $setting-width;
+
+    //   //   // padding: 1rem;
+    //   //   // grid-gap: 1rem;
+    //   //   // border: 1px dotted red;
+  }
+
+  .play-btn-wrapper {
+    text-align: left;
+    margin-left: 1rem;
+  }
+}

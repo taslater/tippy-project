@@ -29,17 +29,17 @@ body {
   // color: #2c302f;
   // font-weight: 400;
   font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
-  display: grid;
+  // display: grid;
   // grid-template-columns: 1fr;
-  grid-template-rows: auto 1fr auto;
-  grid-template-areas:
-    "nav"
-    "main"
-    "footer";
+  // grid-template-rows: auto 1fr auto;
+  // grid-template-areas:
+  //   "nav"
+  //   "main"
+  //   "footer";
 }
 
 nav {
-  grid-area: nav;
+  // grid-area: nav;
   background: var(--nav-bg-clr);
   color: var(--nav-font-clr);
   text-transform: uppercase;
@@ -210,6 +210,7 @@ p {
 // }
 
 footer {
+  // position: relative;
   grid-area: footer;
   background: var(--nav-bg-clr);
   padding: 2em;

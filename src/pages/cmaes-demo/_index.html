@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>CMA-ES Demo</title>
+  </head>
+  <body>
+    <%= require('../partials/nav.html?raw') %>
+    <main>
+      <header>
+        <h1 class="masthead">CMA-ES Demo</h1>
+      </header>
+      <div class="demo-grid-container">
+        <div class="demo-grid">
+          <div id="obj-fn-canvas-div">
+            <canvas id="canvas-bg" class="obj-fn-canvas"></canvas>
+            <canvas id="canvas-fg" class="obj-fn-canvas"></canvas>
+            <canvas id="canvas-means" class="obj-fn-canvas"></canvas>
+            <div class="zoom-div">
+              <button id="zoom-in" class="zoom-btn">
+                <i class="fas fa-plus"></i>
+              </button>
+              <hr />
+              <button id="zoom-out" class="zoom-btn">
+                <i class="fas fa-minus"></i>
+              </button>
+            </div>
+          </div>
+
+          <div id="chart-canvas-div">
+            <canvas id="canvas-chart"></canvas>
+          </div>
+
+          <div class="controls-container">
+            <div class="settings-wrapper">
+              <div class="settings-container">
+                <div class="setting-wrapper">
+                  <label for="obj-fn-select">Objective function:</label>
+                  <select name="obj-fn-select" id="obj-fn-select"></select>
+                </div>
+
+                <div class="setting-wrapper">
+                  <label for="pop-mult-select">Population multiplier:</label>
+                  <select name="pop-mult-select" id="pop-mult-select">
+                    <option value="0.5">Half</option>
+                    <option value="1" selected>Default</option>
+                    <option value="2">Double</option>
+                    <option value="4">Quadruple</option>
+                  </select>
+                </div>
+
+                <div class="setting-wrapper">
+                  <input
+                    type="checkbox"
+                    id="means-path-checkbox"
+                    name="means-path-checkbox"
+                  />
+                  <label for="means-path-checkbox"> Show search path</label>
+                </div>
+              </div>
+            </div>
+            <div class="play-btn-wrapper">
+              <div class="play-btn-container">
+                <button id="restart-btn">
+                  <i class="fas fa-redo"></i>
+                </button>
+                <hr />
+                <button id="step-bwd-btn">
+                  <i class="fas fa-step-backward"></i>
+                </button>
+                <button id="play-btn" class="paused">
+                  <i class="fas fa-play"></i>
+                </button>
+                <button id="step-fwd-btn">
+                  <i class="fas fa-step-forward"></i>
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </main>
+    <%= require('../partials/footer.html?raw') %>
+  </body>
+</html>

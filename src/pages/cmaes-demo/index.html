@@ -4,80 +4,77 @@
     <meta charset="UTF-8" />
     <meta http-equiv="X-UA-Compatible" content="IE=edge" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title><%= htmlWebpackPlugin.options.title %></title>
+    <title>CMA-ES Demo</title>
   </head>
   <body>
     <%= require('../partials/nav.html?raw') %>
     <main>
       <header>
-        <h1 class="masthead">CMA-ES</h1>
+        <h1 class="masthead">CMA-ES Demo</h1>
       </header>
-      <div class="demo-grid-container">
-        <div class="demo-grid">
-          <div id="obj-fn-canvas-div">
-            <canvas id="canvas-bg" class="obj-fn-canvas"></canvas>
-            <canvas id="canvas-fg" class="obj-fn-canvas"></canvas>
-            <canvas id="canvas-means" class="obj-fn-canvas"></canvas>
-            <div class="zoom-div">
-              <button id="zoom-in" class="zoom-btn">
-                <i class="fas fa-plus"></i>
+
+      <div class="demo-container">
+        <div id="settings-container">
+          <div class="setting-item-wrapper">
+            <label for="obj-fn-select">Objective function:</label>
+            <select name="obj-fn-select" id="obj-fn-select"></select>
+          </div>
+
+          <div class="setting-item-wrapper">
+            <label for="pop-mult-select">Population multiplier:</label>
+            <select name="pop-mult-select" id="pop-mult-select">
+              <option value="0.5">Half</option>
+              <option value="1" selected>Default</option>
+              <option value="2">Double</option>
+              <option value="4">Quadruple</option>
+            </select>
+          </div>
+
+          <div class="setting-item-wrapper">
+            <input
+              type="checkbox"
+              id="means-path-checkbox"
+              name="means-path-checkbox"
+            />
+            <label for="means-path-checkbox"> Show search path</label>
+          </div>
+        </div>
+
+        <div id="obj-fn-canvas-div">
+          <canvas id="canvas-bg" class="obj-fn-canvas"></canvas>
+          <canvas id="canvas-fg" class="obj-fn-canvas"></canvas>
+          <canvas id="canvas-means" class="obj-fn-canvas"></canvas>
+          <div class="zoom-div">
+            <button id="zoom-in" class="zoom-btn">
+              <i class="fas fa-plus"></i>
+            </button>
+            <hr />
+            <button id="zoom-out" class="zoom-btn">
+              <i class="fas fa-minus"></i>
+            </button>
+          </div>
+
+          <div class="play-btn-wrapper">
+            <div class="play-btn-container">
+              <button id="reset-btn">
+                <i class="fas fa-redo"></i>
               </button>
               <hr />
-              <button id="zoom-out" class="zoom-btn">
-                <i class="fas fa-minus"></i>
+              <button id="step-bwd-btn">
+                <i class="fas fa-step-backward"></i>
               </button>
-            </div>
-          </div>
-
-          <div id="chart-canvas-div">
-            <canvas id="canvas-chart"></canvas>
-          </div>
-
-          <div class="controls-container">
-            <div class="settings-container">
-              <div id="obj-fn-select-div" class="dropdown-div">
-                <label for="obj-fn-select">Objective function:</label>
-                <select name="obj-fn-select" id="obj-fn-select"></select>
-              </div>
-
-              <div id="pop-mult-select-div" class="dropdown-div">
-                <label for="pop-mult-select">Population multiplier:</label>
-                <select name="pop-mult-select" id="pop-mult-select">
-                  <option value="0.5">Half</option>
-                  <option value="1" selected>Default</option>
-                  <option value="2">Double</option>
-                  <option value="4">Quadruple</option>
-                </select>
-              </div>
-              <div class="path-check-div">
-                <input
-                  type="checkbox"
-                  id="means-path-checkbox"
-                  name="means-path-checkbox"
-                />
-                <label for="means-path-checkbox"> Show search path</label>
-              </div>
-            </div>
-            <div class="play-btn-wrapper">
-              <div class="play-btn-div">
-                <button id="restart-btn">
-                  <i class="fas fa-redo"></i>
-                </button>
-                <hr />
-                <button id="step-bwd-btn">
-                  <i class="fas fa-step-backward"></i>
-                </button>
-                <button id="play-btn" class="paused">
-                  <i class="fas fa-play"></i>
-                </button>
-                <button id="step-fwd-btn">
-                  <i class="fas fa-step-forward"></i>
-                </button>
-              </div>
+              <button id="play-btn">
+                <i class="fas fa-play"></i>
+              </button>
+              <button id="step-fwd-btn">
+                <i class="fas fa-step-forward"></i>
+              </button>
             </div>
           </div>
         </div>
       </div>
+
+      <div id="chart-canvas-div"></div>
     </main>
     <%= require('../partials/footer.html?raw') %>
   </body>
