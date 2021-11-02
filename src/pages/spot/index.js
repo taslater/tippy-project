@@ -3,8 +3,7 @@ require("../../main.scss")
 require("../partials/nav.js")
 
 import {
-  w,
-  h,
+  canvasH,
   markerH,
   canvasGroundH,
   cameraOffset,
@@ -13,7 +12,6 @@ import {
   epLen,
   metersToPixels,
   displayCreatureCount,
-  // canvasGroundH,
 } from "./globals.js"
 import { drawSpot } from "./draw.js"
 import _ from "lodash"
@@ -41,25 +39,20 @@ const canvasFG = document.getElementById("canvas-fg"),
   ctxMarkers = canvasMarkers.getContext("2d"),
   canvasDiv = document.getElementById("canvas-div")
 
-canvasDiv.setAttribute("style", `height:${h}px;`)
-canvasFG.height = h
-canvasBG.height = h
+canvasDiv.setAttribute("style", `height:${canvasH}px;`)
+canvasFG.height = canvasH
+canvasBG.height = canvasH
 canvasMarkers.height = markerH
 canvasMarkers.setAttribute("style", `top:${cameraInitY - markerH}px;`)
 
-// canvasFG.width = w
-// canvasBG.width = w
-// canvasMarkers.width = w
-
 function resizeDemoCanvas() {
-  // const newWidth = canvasDiv.offsetWidth
   const newWidth = window.innerWidth
   canvasFG.width = newWidth
   canvasBG.width = newWidth
   canvasMarkers.width = newWidth
 
   ctxBG.fillStyle = "skyblue"
-  ctxBG.fillRect(0, 0, newWidth, h)
+  ctxBG.fillRect(0, 0, newWidth, canvasH)
   ctxBG.fillStyle = "green"
   ctxBG.fillRect(0, cameraInitY - 2, newWidth, canvasGroundH)
 }
@@ -67,11 +60,6 @@ resizeDemoCanvas()
 window.onresize = _.debounce(() => {
   resizeDemoCanvas()
 }, 200)
-
-// ctxBG.fillStyle = "skyblue"
-// ctxBG.fillRect(0, 0, ctxBG.canvas.width, ctxBG.canvas.height)
-// ctxBG.fillStyle = "green"
-// ctxBG.fillRect(0, cameraInitY - 2, ctxBG.canvas.width, ctxBG.canvas.height)
 
 const loadingMessageElement = document.getElementById("loading-message")
 let nDots = 0

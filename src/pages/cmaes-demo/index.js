@@ -59,7 +59,6 @@ window.onresize = _.debounce(() => {
   resizeElements()
 }, 100)
 resizeElements()
-setTimeout(resizeElements, 100)
 
 const markerCanvas = getMarkerCanvas(),
   playBtn = document.getElementById("play-btn"),
@@ -440,11 +439,6 @@ function resizeElements() {
   )
   quarterBgImageDataData = quarterBgImageData.data
   quarterBgImageDataData.fill(255)
-
-  chartCanvasDiv.setAttribute(
-    "style",
-    `height:${Math.round(uplotDiv.offsetHeight)}px`
-  )
 
   if (cmaHistory.currentStep > -1) {
     updateVizWorker()

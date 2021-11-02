@@ -1,11 +1,10 @@
 export const nWorkers = 8,
-  popsizeMultiplier = 8,
+  popsizeMultiplier = 4,
   epLen = 1000,
   cmaSigma = 0.1,
   displayCreatureCount = 8
 
-export const w = 800,
-  h = 400,
+export const canvasH = 400,
   ts = 1 / 60,
   metersToPixels = 400,
   b2GroundH = 0,
@@ -16,7 +15,7 @@ export const w = 800,
   shoulderHMeters = -0.55,
   // cameraW = 0.5 * w,
   cameraOffset = 300,
-  cameraInitY = h - canvasGroundH,
+  cameraInitY = canvasH - canvasGroundH,
   upperLegPts = [
     0.2518, -0.2119, -0.0261, 0.073, -0.0795, 0.0168, 0.2209, -0.2437,
   ],

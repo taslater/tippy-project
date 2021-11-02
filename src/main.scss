@@ -26,16 +26,9 @@ html {
 body {
   min-height: 100%;
   background: var(--main-bg-clr);
-  // color: #2c302f;
-  // font-weight: 400;
   font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
-  // display: grid;
-  // grid-template-columns: 1fr;
-  // grid-template-rows: auto 1fr auto;
-  // grid-template-areas:
-  //   "nav"
-  //   "main"
-  //   "footer";
+  display: flex;
+  flex-direction: column;
 }
 
 nav {
@@ -211,10 +204,10 @@ p {
 
 footer {
   // position: relative;
-  grid-area: footer;
   background: var(--nav-bg-clr);
   padding: 2em;
   text-transform: uppercase;
+  margin-top: auto;
 
   ul {
     list-style: none;
