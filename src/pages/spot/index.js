@@ -1,6 +1,6 @@
-require("./index.scss")
 require("../../main.scss")
 require("../partials/nav.js")
+require("./index.scss")
 
 import {
   canvasH,

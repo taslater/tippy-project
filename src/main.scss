@@ -190,11 +190,10 @@ p {
 //   }
 // }
 
-// main {
-//   grid-area: main;
-//   padding: 10px 30px 10px 30px;
-//   overflow: auto;
-// }
+main {
+  display: flex;
+  flex-direction: column;
+}
 
 // h1,
 // h2,

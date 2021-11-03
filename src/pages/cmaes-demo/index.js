@@ -1,11 +1,12 @@
-require("./index.scss")
 require("../../main.scss")
 require("../partials/nav.js")
+require("./index.scss")
+// require("./layout.js")
 require("../../../node_modules/uplot/dist/uPlot.min.css")
 
 import { objFns } from "./obj-fns.js"
 import {
-  canvasDimMax,
+  // canvasDimMax,
   markerR,
   objFnInit,
   getViewStep,
@@ -18,15 +19,40 @@ import { drawCanvas } from "./../../js/draw-canvas.js"
 import _ from "lodash"
 
 const settingsContainer = document.getElementById("settings-container"),
-  chartCanvasDiv = document.getElementById("chart-canvas-div")
+  chartContainer = document.getElementById("chart-container"),
+  settingsContainerStyles = window.getComputedStyle(settingsContainer),
+  settingsContainerLRPad =
+    parseFloat(settingsContainerStyles["paddingLeft"]) +
+    parseFloat(settingsContainerStyles["paddingRight"]),
+  firstSettingWrapper = document.querySelector(".setting-wrapper"),
+  firstSettingWrapperStyles = window.getComputedStyle(firstSettingWrapper),
+  minSettingsWidth =
+    settingsContainerLRPad +
+    firstSettingWrapper.offsetWidth +
+    parseFloat(firstSettingWrapperStyles["marginLeft"]) +
+    parseFloat(firstSettingWrapperStyles["marginRight"])
 
-const cmaHistory = new CMAHistory(objFnInit, chartCanvasDiv)
-const uplotDiv = chartCanvasDiv.firstChild
+const cmaHistory = new CMAHistory(objFnInit, chartContainer)
+// const uplotDiv = chartContainer.firstChild
 
 const vizWorker = new Worker(new URL("./viz-worker-v2.js", import.meta.url))
 initVizWorker()
 const cmaWorker = new Worker(new URL("./cma-worker.js", import.meta.url))
 initCmaWorker()
+
+const settingsBtn = document.getElementById("settings-btn")
+settingsBtn.onclick = () => {
+  const hide = hideableElements[0].classList.contains("hidden")
+  for (let el of hideableElements) {
+    if (hide) {
+      el.classList.remove("hidden")
+    } else {
+      el.classList.add("hidden")
+    }
+  }
+  settingsBtn.innerHTML = hide ? "Hide Settings" : "Show Settings"
+  styleSettingsButton()
+}
 
 let canvasHalfDim,
   quarterBgImageData,
@@ -45,7 +71,9 @@ const fnGradientCanvas = document.getElementById("canvas-bg"),
   cmaMeansCanvas = document.getElementById("canvas-means")
 const fnGradientQuarterCanvas = document.createElement("canvas"),
   fnGradientQuarterCTX = fnGradientQuarterCanvas.getContext("2d")
-const objFnCanvasDiv = document.getElementById("obj-fn-canvas-div")
+const objFnContainer = document.getElementById("gradient-container"),
+  topContainer = document.getElementById("top-container"),
+  hideableElements = document.getElementsByClassName("hideable")
 
 const fnGradientCTX = fnGradientCanvas.getContext("2d"),
   cmaSolsCTX = cmaSolsCanvas.getContext("2d"),
@@ -57,7 +85,7 @@ cmaSolsCTX.lineWidth = 3
 
 window.onresize = _.debounce(() => {
   resizeElements()
-}, 100)
+}, 200)
 resizeElements()
 
 const markerCanvas = getMarkerCanvas(),
@@ -406,30 +434,39 @@ function scaleToward(current, next) {
 }
 
 function resizeElements() {
+  const windowWidth = window.innerWidth,
+    windowHeight = window.innerHeight
+
   cmaHistory.uplot.setSize({
-    width: window.innerWidth,
+    width: windowWidth,
     height: chartHeight,
   })
 
-  const maxHeight =
-    window.innerHeight - settingsContainer.offsetHeight - uplotDiv.offsetHeight
-  const newCanvasHalfDim = Math.min(
-    canvasDimMax / 2,
-    Math.floor(Math.min(window.innerWidth, maxHeight) / 2)
-  )
-  if (newCanvasHalfDim == canvasHalfDim) {
-    return
-  }
-  canvasHalfDim = newCanvasHalfDim
-  const canvasDim = 2 * canvasHalfDim
-  // console.log({ canvasDim })
-  objFnCanvasDiv.setAttribute(
-    "style",
-    `width:${canvasDim}px; height:${canvasDim}px`
-  )
+  const objFnContainerHalfDim = Math.round(
+      Math.min(windowWidth, windowHeight - chartContainer.offsetHeight) / 2
+    ),
+    objFnContainerDim = 2 * objFnContainerHalfDim,
+    objFnContainerDimStr = `${objFnContainerDim}px`
+
+  // const maxHeight =
+  //   window.innerHeight - settingsContainer.offsetHeight - uplotDiv.offsetHeight
+  // const newCanvasHalfDim = objFnContainerHalfDim
+  // if (objFnContainerHalfDim == canvasHalfDim) {
+  //   return
+  // }
+  objFnContainer.style.height = objFnContainerDimStr
+  objFnContainer.style.width = objFnContainerDimStr
+  canvasHalfDim = objFnContainerHalfDim
+  // const canvasDim = 2 * canvasHalfDim,
+  //   dimStr = `${canvasDim}px`
+  // objFnContainer.style.height = dimStr
+  // objFnCanvasDiv.setAttribute(
+  //   "style",
+  //   `width:${canvasDim}px; height:${canvasDim}px`
+  // )
   for (let canvas of [cmaSolsCanvas, fnGradientCanvas, cmaMeansCanvas]) {
-    canvas.width = canvasDim
-    canvas.height = canvasDim
+    canvas.width = objFnContainerDim
+    canvas.height = objFnContainerDim
   }
   fnGradientQuarterCanvas.height = canvasHalfDim
   fnGradientQuarterCanvas.width = canvasHalfDim
@@ -440,7 +477,33 @@ function resizeElements() {
   quarterBgImageDataData = quarterBgImageData.data
   quarterBgImageDataData.fill(255)
 
+  const availableWidth = windowWidth - objFnContainerDim
+  if (availableWidth > minSettingsWidth) {
+    topContainer.style.maxHeight = objFnContainerDimStr
+    topContainer.style.flexDirection = "row"
+    settingsContainer.style.flexFlow = "column nowrap"
+    objFnContainer.style.alignSelf = "flex-end"
+  } else {
+    topContainer.style.maxHeight = "min-content"
+    topContainer.style.flexDirection = "column"
+    settingsContainer.style.flexFlow = "row wrap"
+    objFnContainer.style.alignSelf = "center"
+  }
+
+  styleSettingsButton()
+
   if (cmaHistory.currentStep > -1) {
     updateVizWorker()
+  }
+}
+
+function styleSettingsButton() {
+  const hiding = hideableElements[0].classList.contains("hidden"),
+    wideView = window.getComputedStyle(topContainer)["flexDirection"] == "row"
+  console.log(hiding, wideView)
+  if (!wideView && !hiding) {
+    settingsBtn.parentElement.style.minWidth = "100%"
+  } else {
+    settingsBtn.parentElement.style.minWidth = "auto"
   }
 }

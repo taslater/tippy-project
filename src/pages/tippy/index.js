@@ -1,6 +1,7 @@
-require("./index.scss")
 require("../../main.scss")
 require("../partials/nav.js")
+require("./index.scss")
+
 import Box2DFactory from "box2d-wasm/dist/es/Box2D"
 import { generateTerrainPts, Population, updateDirection } from "./tippy.js"
 import { globals } from "./globals.js"
