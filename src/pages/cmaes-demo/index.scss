@@ -13,14 +13,15 @@ $canvas-btn-clr: rgba(255, 255, 255, 0.8);
   display: inline-flex;
   justify-content: space-between;
 
-  // background-color: coral;
   padding: 0.5rem;
   overflow-y: auto;
   min-height: min-content;
 }
 
 .setting-wrapper {
-  display: inline-block;
+  display: inline-flex;
+  flex-direction: column;
+  justify-content: center;
   width: $setting-width;
 
   margin: 0.25rem;
@@ -30,11 +31,20 @@ $canvas-btn-clr: rgba(255, 255, 255, 0.8);
   align-self: stretch;
 
   background: white;
-}
 
-.setting-wrapper select,
-.setting-wrapper input:not([type="checkbox"]) {
-  width: 100%;
+  select,
+  input:not([type="checkbox"]) {
+    width: 100%;
+    font-size: 1rem;
+    margin: 0.25rem auto;
+  }
+
+  button {
+    width: 100%;
+    padding: 0.5rem;
+    font-size: 1.125rem;
+    top: 0;
+  }
 }
 
 .setting-wrapper.hidden {
@@ -51,7 +61,8 @@ $canvas-btn-clr: rgba(255, 255, 255, 0.8);
   margin-right: 0.5rem;
 }
 
-.more {
+.setting-wrapper.more {
+  display: inline-block;
   flex-shrink: 0;
   flex-grow: 1;
   flex-basis: 0;
@@ -60,37 +71,37 @@ $canvas-btn-clr: rgba(255, 255, 255, 0.8);
   background: none;
   padding: 0;
   margin: 0;
-}
 
-.more button {
-  padding: 0.25rem;
-  font-size: 1rem;
-  margin: 0.25rem;
-  background-color: white;
+  button {
+    width: auto;
+    padding: 0.25rem;
+    font-size: 1rem;
+    margin: 0.25rem;
+    background-color: white;
+  }
 }
 
 #gradient-container {
   position: relative;
   display: inline-block;
-  background: red;
   aspect-ratio: 1;
   align-self: flex-end;
 }
 
-.zoom-div {
+.zoom-container {
   z-index: 4;
   position: absolute;
   display: flex;
   flex-direction: column;
   justify-content: center;
-  top: 0.75rem;
-  left: 0.75rem;
+  top: 0.25rem;
+  left: 0.25rem;
   background: $canvas-btn-clr;
   border-radius: 0.5rem;
 
   hr {
     width: 1.5rem;
-    height: 0.125rem;
+    height: 1px;
     margin: 0 auto;
     background-color: gray;
     border: none;
@@ -103,11 +114,12 @@ $canvas-btn-clr: rgba(255, 255, 255, 0.8);
   font-size: 1.25rem;
   background: none;
   border: none;
+  color: black;
 }
 
 .play-btn-wrapper {
   position: absolute;
-  bottom: 1rem;
+  bottom: 0.25rem;
   left: 0;
   right: 0;
   text-align: center;
@@ -117,9 +129,15 @@ $canvas-btn-clr: rgba(255, 255, 255, 0.8);
   position: relative;
   display: inline-flex;
   background: $canvas-btn-clr;
-  border: 1px solid black;
   border-radius: 0.5rem;
   z-index: 4;
+
+  hr {
+    border: none;
+    width: 1px;
+    background: gray;
+    margin: 4px 2px;
+  }
 
   button {
     border: none;
@@ -127,8 +145,9 @@ $canvas-btn-clr: rgba(255, 255, 255, 0.8);
     z-index: 4;
     i {
       font-size: 1.75rem;
-      margin: 0.5rem;
+      margin: 0.375rem;
       z-index: 4;
+      color: black;
     }
   }
 }
@@ -151,4 +170,6 @@ $canvas-btn-clr: rgba(255, 255, 255, 0.8);
 
 #chart-container {
   background: white;
+  width: min-content;
+  align-self: center;
 }

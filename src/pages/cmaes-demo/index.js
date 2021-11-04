@@ -1,19 +1,19 @@
 require("../../main.scss")
 require("../partials/nav.js")
 require("./index.scss")
-// require("./layout.js")
 require("../../../node_modules/uplot/dist/uPlot.min.css")
 
 import { objFns } from "./obj-fns.js"
 import {
-  // canvasDimMax,
   markerR,
   objFnInit,
   getViewStep,
   zoomStepMag,
   chartHeight,
+  canvasDimMax,
+  chartWidthMax,
 } from "./globals.js"
-import { CMAHistory } from "./cmaHistory.js"
+import { CMAHistory } from "./cma-history.js"
 import { drawCanvas } from "./../../js/draw-canvas.js"
 
 import _ from "lodash"
@@ -33,7 +33,99 @@ const settingsContainer = document.getElementById("settings-container"),
     parseFloat(firstSettingWrapperStyles["marginRight"])
 
 const cmaHistory = new CMAHistory(objFnInit, chartContainer)
-// const uplotDiv = chartContainer.firstChild
+
+const playBtn = document.getElementById("play-btn"),
+  playIcon = playBtn.getElementsByTagName("i")[0]
+
+playBtn.addEventListener("click", () => {
+  playing = !playing
+  updatePlaying()
+})
+
+const stepBwdBtn = document.getElementById("step-bwd-btn")
+stepBwdBtn.addEventListener("click", () => {
+  zoomNext = 1
+  stopPlaying()
+  cmaHistory.currentStep = Math.max(0, cmaHistory.currentStep - 1)
+  // updatePlotCurrentStep()
+  // uplot.redraw(false, false)
+  updateEvalLims()
+})
+
+const zoomInBtn = document.getElementById("zoom-in")
+zoomInBtn.addEventListener("click", () => {
+  stopPlaying()
+  zoomNext *= 1.1
+  updateVizWorker()
+})
+
+const zoomOutBtn = document.getElementById("zoom-out")
+zoomOutBtn.addEventListener("click", () => {
+  stopPlaying()
+  zoomNext /= 1.1
+  updateVizWorker()
+})
+
+const resetBtn = document.getElementById("reset-btn")
+resetBtn.addEventListener("click", () => {
+  updateSettings()
+})
+
+const stepFwdBtn = document.getElementById("step-fwd-btn")
+stepFwdBtn.addEventListener("click", () => {
+  stopPlaying()
+  stepFwd()
+})
+
+const fnSelect = document.getElementById("obj-fn-select"),
+  popMultSelect = document.getElementById("pop-mult-select"),
+  sigmaSelect = document.getElementById("sigma-select"),
+  radiusSelect = document.getElementById("mean-radius-select"),
+  directionSelect = document.getElementById("mean-direction-select"),
+  randDirectionCheckbox = document.getElementById("random-dir-checkbox")
+
+const defaultSettings = {
+  popMult: popMultSelect.selectedIndex,
+  sigma: sigmaSelect.value,
+  radius: radiusSelect.value,
+  direction: directionSelect.value,
+  randDirection: randDirectionCheckbox.checked,
+}
+
+const restoreButton = document.getElementById("restore-button")
+restoreButton.onclick = () => {
+  restoreDefaults()
+}
+
+directionSelect.disabled = randDirectionCheckbox.checked
+randDirectionCheckbox.addEventListener("change", () => {
+  directionSelect.disabled = randDirectionCheckbox.checked
+})
+
+const timerIds = []
+
+for (let k of Object.keys(objFns)) {
+  const option = document.createElement("option")
+  option.value = k
+  option.text = objFns[k].fancyName
+  if (k === objFnInit) {
+    option.selected = true
+  }
+  fnSelect.add(option)
+}
+
+;[
+  fnSelect,
+  popMultSelect,
+  sigmaSelect,
+  radiusSelect,
+  directionSelect,
+  randDirectionCheckbox,
+].forEach((el) => {
+  el.addEventListener("change", () => {
+    updateSettings()
+  })
+})
 
 const vizWorker = new Worker(new URL("./viz-worker-v2.js", import.meta.url))
 initVizWorker()
@@ -57,14 +149,13 @@ settingsBtn.onclick = () => {
 let canvasHalfDim,
   quarterBgImageData,
   quarterBgImageDataData,
-  objFnName = objFnInit,
+  // objFnName = objFnInit,
   zoomCurrent = 1,
   zoomNext = 1,
   viewStepInv,
   evalLimCurrent = undefined,
   evalLimNext,
   playing = false
-const timerIds = []
 
 const fnGradientCanvas = document.getElementById("canvas-bg"),
   cmaSolsCanvas = document.getElementById("canvas-fg"),
@@ -75,87 +166,16 @@ const objFnContainer = document.getElementById("gradient-container"),
   topContainer = document.getElementById("top-container"),
   hideableElements = document.getElementsByClassName("hideable")
 
+const markerCanvas = getMarkerCanvas()
+
 const fnGradientCTX = fnGradientCanvas.getContext("2d"),
   cmaSolsCTX = cmaSolsCanvas.getContext("2d"),
   cmaMeansCTX = cmaMeansCanvas.getContext("2d")
-// style for search ellipse
-// cmaSolsCTX.strokeStyle = "rgba(255, 255, 255, 0.8)"
-cmaSolsCTX.strokeStyle = "white"
-cmaSolsCTX.lineWidth = 3
 
 window.onresize = _.debounce(() => {
   resizeElements()
 }, 200)
 resizeElements()
-
-const markerCanvas = getMarkerCanvas(),
-  playBtn = document.getElementById("play-btn"),
-  playIcon = playBtn.getElementsByTagName("i")[0]
-
-const fnSelect = document.getElementById("obj-fn-select")
-
-for (let k of Object.keys(objFns)) {
-  const option = document.createElement("option")
-  option.value = k
-  option.text = objFns[k].fancyName
-  if (k === objFnInit) {
-    option.selected = true
-  }
-  fnSelect.add(option)
-}
-
-fnSelect.addEventListener("change", (e) => {
-  stopPlaying()
-  objFnName = e.target.value
-
-  resetCMA()
-})
-
-function resetCMA() {
-  // for (let i = 0; i < chartData.length; i++) {
-  //   chartData[i] = []
-  // }
-  // uplot.setData(chartData)
-  cmaHistory.reset(objFnName)
-  cmaWorker.postMessage(["objFnName", objFnName])
-  evalLimCurrent = undefined
-  zoomCurrent = 1
-  zoomNext = 1
-}
-
-const popMultSelect = document.getElementById("pop-mult-select")
-popMultSelect.addEventListener("change", (e) => {
-  stopPlaying()
-  let popsizeMultiplier = e.target.value
-  cmaWorker.postMessage(["popMult", popsizeMultiplier])
-  resetCMA()
-})
-
-const zoomInBtn = document.getElementById("zoom-in")
-zoomInBtn.addEventListener("click", () => {
-  stopPlaying()
-  zoomNext *= 1.1
-  updateVizWorker()
-})
-
-const zoomOutBtn = document.getElementById("zoom-out")
-zoomOutBtn.addEventListener("click", () => {
-  stopPlaying()
-  zoomNext /= 1.1
-  updateVizWorker()
-})
-
-const resetBtn = document.getElementById("reset-btn")
-resetBtn.addEventListener("click", () => {
-  stopPlaying()
-  resetCMA()
-})
-
-const stepFwdBtn = document.getElementById("step-fwd-btn")
-stepFwdBtn.addEventListener("click", () => {
-  stopPlaying()
-  stepFwd()
-})
 
 function stepFwd() {
   clearTimerIds()
@@ -164,26 +184,9 @@ function stepFwd() {
   if (cmaHistory.currentStep > cmaHistory.solutions.length - 1) {
     cmaWorker.postMessage(["step", true])
   } else {
-    // updatePlotCurrentStep()
-    // uplot.redraw(false, false)
     updateEvalLims()
   }
 }
-
-playBtn.addEventListener("click", () => {
-  playing = !playing
-  updatePlaying()
-})
-
-const stepBwdBtn = document.getElementById("step-bwd-btn")
-stepBwdBtn.addEventListener("click", () => {
-  zoomNext = 1
-  stopPlaying()
-  cmaHistory.currentStep = Math.max(0, cmaHistory.currentStep - 1)
-  // updatePlotCurrentStep()
-  // uplot.redraw(false, false)
-  updateEvalLims()
-})
 
 function updatePlaying() {
   playIcon.className = playing ? "fas fa-pause" : "fas fa-play"
@@ -225,13 +228,28 @@ meansPathCheck.addEventListener("change", () => {
 function initCmaWorker() {
   cmaWorker.onmessage = (e) => {
     cmaHistory.add(e.data)
-    // chartData[0].push(chartData[0].length)
-    // chartData[1].push(cmaHistory.meanScores.slice(-1)[0])
-    // uplot.setData(chartData)
-    // updatePlotCurrentStep()
-    // uplot.redraw(false, false)
     updateEvalLims()
   }
+  updateSettings()
+}
+
+function updateSettings() {
+  const cmaSettings = {
+    objFnName: objFnName(),
+    // popsizeMultiplier: parseFloat(
+
+    // ),
+    popsizeMultiplier: popsizeMultiplier(),
+    sigmaScale: parseFloat(sigmaSelect.value),
+    meanRadius: parseFloat(radiusSelect.value),
+    meanDirection: directionSelect.disabled
+      ? null
+      : parseFloat(directionSelect.value),
+  }
+
+  cmaWorker.postMessage(["settings", cmaSettings])
+  updateVizWorker()
+  resetCMA()
 }
 
 function updateEvalLims() {
@@ -246,14 +264,11 @@ function updateEvalLims() {
 }
 
 function updateVizWorker() {
-  vizWorker.postMessage(
-    // cmaHistory.gradientWorkerMessage(canvasHalfDim, zoom)
-    {
-      canvasHalfDim,
-      evalHalfLim: evalLimCurrent / zoomCurrent,
-      objFnName,
-    }
-  )
+  vizWorker.postMessage({
+    canvasHalfDim,
+    evalHalfLim: evalLimCurrent / zoomCurrent,
+    objFnName: objFnName(),
+  })
 }
 
 function drawMeans() {
@@ -289,7 +304,6 @@ function drawMeans() {
 
 function draw() {
   requestAnimationFrame(() => {
-    // const historyStep = cmaHistory.currentStep
     viewStepInv = 1.0 / getViewStep(evalLimCurrent / zoomCurrent, canvasHalfDim)
     if (displayMeansPath) {
       drawMeans()
@@ -438,32 +452,21 @@ function resizeElements() {
     windowHeight = window.innerHeight
 
   cmaHistory.uplot.setSize({
-    width: windowWidth,
+    width: Math.min(windowWidth, chartWidthMax),
     height: chartHeight,
   })
 
   const objFnContainerHalfDim = Math.round(
-      Math.min(windowWidth, windowHeight - chartContainer.offsetHeight) / 2
+      Math.min(windowWidth, windowHeight - chartHeight) / 2,
+      canvasDimMax / 2
     ),
     objFnContainerDim = 2 * objFnContainerHalfDim,
     objFnContainerDimStr = `${objFnContainerDim}px`
 
-  // const maxHeight =
-  //   window.innerHeight - settingsContainer.offsetHeight - uplotDiv.offsetHeight
-  // const newCanvasHalfDim = objFnContainerHalfDim
-  // if (objFnContainerHalfDim == canvasHalfDim) {
-  //   return
-  // }
   objFnContainer.style.height = objFnContainerDimStr
   objFnContainer.style.width = objFnContainerDimStr
   canvasHalfDim = objFnContainerHalfDim
-  // const canvasDim = 2 * canvasHalfDim,
-  //   dimStr = `${canvasDim}px`
-  // objFnContainer.style.height = dimStr
-  // objFnCanvasDiv.setAttribute(
-  //   "style",
-  //   `width:${canvasDim}px; height:${canvasDim}px`
-  // )
+
   for (let canvas of [cmaSolsCanvas, fnGradientCanvas, cmaMeansCanvas]) {
     canvas.width = objFnContainerDim
     canvas.height = objFnContainerDim
@@ -500,10 +503,37 @@ function resizeElements() {
 function styleSettingsButton() {
   const hiding = hideableElements[0].classList.contains("hidden"),
     wideView = window.getComputedStyle(topContainer)["flexDirection"] == "row"
-  console.log(hiding, wideView)
   if (!wideView && !hiding) {
     settingsBtn.parentElement.style.minWidth = "100%"
   } else {
     settingsBtn.parentElement.style.minWidth = "auto"
   }
+}
+
+function resetCMA() {
+  stopPlaying()
+  cmaHistory.reset(objFnName())
+  evalLimCurrent = undefined
+  zoomCurrent = 1
+  zoomNext = 1
+}
+
+function objFnName() {
+  return fnSelect.options[fnSelect.selectedIndex].value
+}
+
+function popsizeMultiplier() {
+  return parseFloat(popMultSelect.options[popMultSelect.selectedIndex].value)
+}
+
+function restoreDefaults() {
+  const { popMult, sigma, radius, direction, randDirection } = defaultSettings
+  popMultSelect.selectedIndex = popMult
+  sigmaSelect.value = sigma
+
+  radiusSelect.value = radius
+  directionSelect.value = direction
+  randDirectionCheckbox.checked = randDirection
+  directionSelect.disabled = randDirection
+  updateSettings()
 }

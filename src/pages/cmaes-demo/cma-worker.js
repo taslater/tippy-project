@@ -1,18 +1,8 @@
 import { CMA, getDefaultCMAPopsize } from "../../js/cma-lib.js"
 import { objFns } from "./obj-fns.js"
-import {
-  objFnInit,
-  meanRadiusMin,
-  meanRadiusMax,
-  sigmaScale,
-  nEllipseTestPts,
-} from "./globals.js"
+import { meanRadiusMin, meanRadiusMax, nEllipseTestPts } from "./globals.js"
 
-let objFnName = objFnInit,
-  objFnLim,
-  objFn,
-  cma,
-  popsizeMultiplier = 1
+let objFnLim, objFn, cma
 
 // IIFE
 const ellipseTestPts = (() => {
@@ -24,33 +14,40 @@ const ellipseTestPts = (() => {
   return testPts
 })()
 
-cmaInit()
+// cmaInit()
 
 onmessage = (e) => {
   const [info, msg] = e.data
-
-  if (info === "objFnName") {
-    objFnName = msg
-    cmaInit()
-  } else if (info === "popMult") {
-    popsizeMultiplier = msg
-    cmaInit()
+  if (info === "settings") {
+    cmaInit(msg)
   } else if (info === "step") {
     cmaStep()
   }
 }
 
-function cmaInit() {
+function cmaInit(settings) {
+  const {
+    objFnName,
+    popsizeMultiplier,
+    sigmaScale,
+    meanRadius,
+    meanDirection,
+  } = settings
   updateObjFn(objFnName)
   const cmaSigma = sigmaScale * objFnLim
-  const randRadians = 2 * Math.PI * Math.random()
-  const randRadius =
-    objFnLim * (meanRadiusMin + Math.random() * (meanRadiusMax - meanRadiusMin))
-  // console.log("objFnLim", objFnLim)
-  // console.log("randRadius", randRadius)
+  const direction =
+    meanDirection == null
+      ? 2 * Math.PI * Math.random()
+      : Math.PI * meanDirection
+  // const radiusMultiplier =
+  //   meanRadius == null
+  //     ? meanRadiusMin + Math.random() * (meanRadiusMax - meanRadiusMin)
+  //     : meanRadius
+  const radiusMultiplier = meanRadius
+  const radius = objFnLim * radiusMultiplier
   const cmaMean = Float32Array.from([
-    randRadius * Math.cos(randRadians),
-    randRadius * Math.sin(randRadians),
+    radius * Math.cos(direction),
+    radius * Math.sin(direction),
   ])
   const popsize = getDefaultCMAPopsize(2) * popsizeMultiplier
   cma = new CMA(cmaMean, cmaSigma, popsize, undefined, undefined)
@@ -99,8 +96,6 @@ function cmaStep() {
   postMessage(message)
 
   cma.tell(sol_score_array)
-
-  // console.log("mean score:", scoreSum / cma.popsize)
 }
 
 function updateObjFn(objFnName) {
