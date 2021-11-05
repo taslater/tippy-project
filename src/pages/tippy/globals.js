@@ -1,8 +1,8 @@
 export const globals = {
   w: 800,
   h: 400,
-  lInputCodes: ["KeyJ", "ArrowLeft"],
-  rInputCodes: ["KeyK", "ArrowRight"],
+  lInputCodes: ["ArrowLeft"],
+  rInputCodes: ["ArrowRight"],
   xOffs: [-0.3, -0.1, 0.1, 0.3],
   ts: 1.0 / 60,
   // sinLim: 0.3,

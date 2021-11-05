@@ -2,6 +2,7 @@ const path = require("path")
 const glob = require("glob")
 const HtmlWebpackPlugin = require("html-webpack-plugin")
 const MiniCssExtractPlugin = require("mini-css-extract-plugin")
+// const { CleanWebpackPlugin } = require("clean-webpack-plugin")
 
 function getEntry() {
   const entry = {}
@@ -50,7 +51,10 @@ module.exports = {
     port: 5001, // default 8080
     open: true, // open default browser
     hot: true, // hot module reloading
-    // watchFiles: true, // watch root (dist) folder
+    watchFiles: [
+      path.resolve(__dirname, "dist"),
+      path.resolve(__dirname, "src"),
+    ], // watch root (dist) folder and src (for html)
   },
   // loaders
   module: {
@@ -80,7 +84,34 @@ module.exports = {
         use: [MiniCssExtractPlugin.loader, "css-loader"],
       },
       // images
-      { test: /\.(svg|ico|png|webp|jpg|gif|jpeg)$/, type: "asset/resource" },
+      // {
+      //   test: /\.(png|jp(e*)g|gif)$/,
+      //   exclude: /node_modules/,
+      //   use: [
+      //     {
+      //       loader: "url-loader",
+      //       options: {
+      //         limit: 10000,
+      //         publicPath: "/",
+      //       },
+      //     },
+      //   ],
+      // },
+      {
+        test: /\.(gif|png|jpe?g|mp4|webm)$/,
+        type: "asset/resource",
+        // use: [
+        //   {
+        //     loader: "file-loader",
+        //     options: {
+        //       name: "[name].[ext]",
+        //       // outputPath: "assets/images/",
+        //       // publicPath: path.resolve(__dirname, "dist"),
+        //       // esModule: false,
+        //     },
+        //   },
+        // ],
+      },
       // js for babel
       {
         test: /\.js$/,
@@ -128,7 +159,11 @@ module.exports = {
   //     template: path.resolve(__dirname, "src/template.html"),
   //   }),
   // ],
-  plugins: [new MiniCssExtractPlugin(), ...getHtmlTemplate()],
+  plugins: [
+    new MiniCssExtractPlugin(),
+    ...getHtmlTemplate(),
+    // new CleanWebpackPlugin(),
+  ],
   experiments: {
     asyncWebAssembly: true,
     syncWebAssembly: true,

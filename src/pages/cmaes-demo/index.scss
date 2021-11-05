@@ -1,6 +1,17 @@
 $setting-width: 11rem;
 $canvas-btn-clr: rgba(255, 255, 255, 0.8);
 
+.cma-demo-container {
+  display: flex;
+  flex-direction: column;
+  *,
+  *::after,
+  *::before {
+    margin: 0;
+    padding: 0;
+  }
+}
+
 #top-container {
   display: inline-flex;
   justify-content: center;
