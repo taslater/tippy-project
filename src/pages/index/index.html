@@ -104,6 +104,28 @@
           system responds very differently to the "flipping" inputs (x-velocity,
           etc) as the user input passes from positive to negative.
         </p>
+        <p>
+          Speaking of controls, <b>the user inputs were restricted</b> so that
+          Tippy would be capable of accurately following a random set of
+          commands. It is not physically realistic for Tippy to change direction
+          instantly, so the controls are restricted to enforce smooth
+          transitions. Tippy is an <b>inverted pendulum</b>. Tippy's
+          acceleration is proportional to the sine of its body angle. So I first
+          modeled the user inputs as request for a given body angle. This forces
+          the user to think in terms of <b>accelerating</b> Tippy rather than
+          requesting a particular <b>velocity</b>. This was effective for early
+          training because Tippy's target behavior directly corresponds to one
+          of the inputs it receives (body angle). It was easy for a simple
+          neural network to tend toward that input, almost thermostatically.
+          Unfortunately, acceleration-based controls do not have a natural upper
+          limit, so users could request Tippy to continue accelerating to
+          unstable speeds. In addition, when the user requests zero-acceleration
+          (no body angle), the squared-error can be small (a nearly-zero body
+          angle) while the impact on physical behavior,
+          <b> a small "drifting" acceleration </b>, is extremely distracting. As
+          a human user, I find velocity-based behavior much more natural than
+          acceleration-based. (Ice skaters may feel differently.) acc
+        </p>
         <!-- <p>To make Tippy fun to play with, we need to design the robot's:</p>
         <ul>
           <li>
