@@ -1,33 +1,45 @@
-const path = require("path")
-const glob = require("glob")
-const HtmlWebpackPlugin = require("html-webpack-plugin")
-const MiniCssExtractPlugin = require("mini-css-extract-plugin")
+const path = require("path");
+const glob = require("glob");
+const HtmlWebpackPlugin = require("html-webpack-plugin");
+const MiniCssExtractPlugin = require("mini-css-extract-plugin");
+// const HtmlWebpackPartialsPlugin = require("html-webpack-partials-plugin");
 // const { CleanWebpackPlugin } = require("clean-webpack-plugin")
 
 function getEntry() {
-  const entry = {}
+  const entry = {};
   glob.sync("./src/pages/**/index.js").forEach((file) => {
-    const name = file.match(/\/pages\/(.+)\/index.js/)[1]
-    entry[name] = file
-  })
-  return entry
+    const name = file.match(/\/pages\/(.+)\/index.js/)[1];
+    entry[name] = file;
+  });
+  return entry;
 }
 
 function getHtmlTemplate() {
   return glob
     .sync("./src/pages/**/index.html")
     .map((file) => {
-      return { name: file.match(/\/pages\/(.+)\/index.html/)[1], path: file }
+      return { name: file.match(/\/pages\/(.+)\/index.html/)[1], path: file };
     })
     .map(
       (template) =>
+        // [
         new HtmlWebpackPlugin({
           title: `${template.name}`,
           template: template.path,
           chunks: [template.name.toString()],
           filename: `${template.name}.html`,
         })
-    )
+      // new HtmlWebpackPartialsPlugin({
+      //   path: path.resolve(__dirname, "src/pages/partials/analytics.html"),
+      //   location: "head",
+      //   priority: "high",
+      //   options: {
+      //     ga_property_id: "UA-156189593-1",
+      //   },
+      // }),
+      // ]
+    );
+  // .flat();
 }
 
 module.exports = {
@@ -83,34 +95,9 @@ module.exports = {
         // test: /\.s[ac]ss$/i,
         use: [MiniCssExtractPlugin.loader, "css-loader"],
       },
-      // images
-      // {
-      //   test: /\.(png|jp(e*)g|gif)$/,
-      //   exclude: /node_modules/,
-      //   use: [
-      //     {
-      //       loader: "url-loader",
-      //       options: {
-      //         limit: 10000,
-      //         publicPath: "/",
-      //       },
-      //     },
-      //   ],
-      // },
       {
         test: /\.(gif|png|jpe?g|mp4|webm)$/,
         type: "asset/resource",
-        // use: [
-        //   {
-        //     loader: "file-loader",
-        //     options: {
-        //       name: "[name].[ext]",
-        //       // outputPath: "assets/images/",
-        //       // publicPath: path.resolve(__dirname, "dist"),
-        //       // esModule: false,
-        //     },
-        //   },
-        // ],
       },
       // js for babel
       {
@@ -148,20 +135,20 @@ module.exports = {
       stream: false,
       crypto: false,
       process: require.resolve("process/browser"),
-      // "crypto-browserify": require.resolve("crypto-browserify"), //if you want to use this module also don't forget npm i crypto-browserify
     },
   },
   // plugins
-  // plugins: [
-  //   new HtmlWebpackPlugin({
-  //     title: "Webpack Test",
-  //     filename: "index.html",
-  //     template: path.resolve(__dirname, "src/template.html"),
-  //   }),
-  // ],
   plugins: [
     new MiniCssExtractPlugin(),
     ...getHtmlTemplate(),
+    // new HtmlWebpackPartialsPlugin({
+    //   path: path.resolve(__dirname, "src/pages/partials/analytics.html"),
+    //   location: "head",
+    //   priority: "high",
+    //   options: {
+    //     ga_property_id: "UA-156189593-1",
+    //   },
+    // }),
     // new CleanWebpackPlugin(),
   ],
   experiments: {
@@ -174,4 +161,4 @@ module.exports = {
       path: false,
     },
   },
-}
+};
