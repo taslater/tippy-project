@@ -11,13 +11,7 @@ window.Benchmark = Benchmark
 
 const suite = new Benchmark.Suite()
 
-// add tests
 suite
-  // .add("RegExp#test", function () {
-  //   ;/o/.test("Hello World!")
-  // })
-  .add("RegExp#test", regExpTest)
-  .add("String#indexOf", strIdxOf)
   // add listeners
   .on("cycle", function (event) {
     console.log(String(event.target))
@@ -27,11 +21,3 @@ suite
   })
   // run async
   .run({ async: true })
-
-function regExpTest() {
-  ;/o/.test("Hello World!")
-}
-
-function strIdxOf() {
-  "Hello World!".indexOf("o") > -1
-}
