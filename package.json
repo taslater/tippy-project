@@ -1,8 +1,10 @@
 {
   "name": "tippy-project-website",
   "version": "1.0.0",
-  "description": "",
+  "description": "A website to demo CMA-ES with client-side JS",
   "scripts": {
+    "check-node-version": "node check-node-version.js",
+    "preinstall": "npm run check-node-version",
     "test": "echo \"Error: no test specified\" && exit 1",
     "build-dev": "webpack",
     "build-prod": "webpack --mode production",
@@ -38,8 +40,13 @@
   },
   "dependencies": {
     "@fortawesome/fontawesome-free": "^5.15.4",
+    "semver": "^7.6.0",
     "timechart": "^0.5.2",
     "uplot": "^1.6.16",
     "webgl-plot": "^0.6.3"
-  }
+  },
+  "engines": {
+    "node": ">=17.0.0 <18.0.0"
+  },
+  "engineStrict": true
 }
