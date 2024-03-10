@@ -1,5 +1,5 @@
 import { globals } from "./globals.js"
-import { rand_normal } from "./random_normal.js"
+import { rand_normal } from "../../js/rand-normal.js"
 
 class Tippy {
   constructor(wheelPosInit, world, b2, population) {

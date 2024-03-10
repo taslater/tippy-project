@@ -1,10 +1,3 @@
-// {
-//   ackley: "Ackley",
-//   bohachevsky1: "Bohachevsky No.1",
-//   griewank: "Griewank",
-//   rastrigin: "Rastrigin",
-// }
-
 export const objFns = {
   // https://www.sfu.ca/~ssurjano/ackley.html
   // https://www.sfu.ca/~ssurjano/Code/ackleym.html
