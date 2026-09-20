@@ -18,6 +18,17 @@ import { drawCanvas } from "./../../js/draw-canvas.js"
 
 import _ from "lodash"
 
+let canvasHalfDim,
+  quarterBgImageData,
+  quarterBgImageDataData,
+  // objFnName = objFnInit,
+  zoomCurrent = 1,
+  zoomNext = 1,
+  viewStepInv,
+  evalLimCurrent = undefined,
+  evalLimNext,
+  playing = false
+
 const settingsContainer = document.getElementById("settings-container"),
   chartContainer = document.getElementById("chart-container"),
   settingsContainerStyles = window.getComputedStyle(settingsContainer),
@@ -145,17 +156,6 @@ settingsBtn.onclick = () => {
   settingsBtn.innerHTML = hide ? "Hide Settings" : "Show Settings"
   styleSettingsButton()
 }
-
-let canvasHalfDim,
-  quarterBgImageData,
-  quarterBgImageDataData,
-  // objFnName = objFnInit,
-  zoomCurrent = 1,
-  zoomNext = 1,
-  viewStepInv,
-  evalLimCurrent = undefined,
-  evalLimNext,
-  playing = false
 
 const fnGradientCanvas = document.getElementById("canvas-bg"),
   cmaSolsCanvas = document.getElementById("canvas-fg"),

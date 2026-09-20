@@ -7,12 +7,21 @@ let satisfies;
 try {
   satisfies = require('semver').satisfies;
 } catch {
+  const parse = (v) => String(v).replace(/^v/, '').split('.').map(Number);
+  const cmp = (a, b) => {
+    for (let i = 0; i < 3; i++) {
+      const x = a[i] || 0;
+      const y = b[i] || 0;
+      if (x !== y) return x < y ? -1 : 1;
+    }
+    return 0;
+  };
   satisfies = (v, range) => {
-    const major = Number(String(v).replace(/^v/, '').split('.')[0]);
-    const min = range.match(/>=\s*(\d+)/);
-    const max = range.match(/<\s*(\d+)/);
-    if (min && major < Number(min[1])) return false;
-    if (max && major >= Number(max[1])) return false;
+    const current = parse(v);
+    const min = range.match(/>=\s*(\d+(?:\.\d+){0,2})/);
+    const max = range.match(/<\s*(\d+(?:\.\d+){0,2})/);
+    if (min && cmp(current, parse(min[1])) < 0) return false;
+    if (max && cmp(current, parse(max[1])) >= 0) return false;
     return true;
   };
 }
